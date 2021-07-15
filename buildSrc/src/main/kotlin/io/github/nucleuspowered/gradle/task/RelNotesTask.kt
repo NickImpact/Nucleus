@@ -3,12 +3,14 @@ package io.github.nucleuspowered.gradle.task
 import io.github.nucleuspowered.gradle.enums.ReleaseLevel
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import javax.inject.Inject
 
 open class RelNotesTask @Inject constructor() : DefaultTask() {
+    @Internal
     var relNotes: String? = null
     private var versionStringProvider: () -> String = { -> "" }
     private var gitHashProvider: () -> String = { -> "" }

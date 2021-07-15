@@ -5,6 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.item.config;
 
 import io.github.nucleuspowered.nucleus.core.services.interfaces.annotation.configuratehelper.LocalisedComment;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -21,13 +22,13 @@ public class RepairConfig {
 
     @Setting(value = "restrictions")
     @LocalisedComment("config.item.repair.restrictions")
-    private List<ItemType> restrictions = new ArrayList<>();
+    private List<ResourceKey> restrictions = new ArrayList<>();
 
     public boolean isWhitelist() {
         return this.useWhitelist;
     }
 
-    public List<ItemType> getRestrictions() {
+    public List<ResourceKey> getRestrictions() {
         return this.restrictions;
     }
 }

@@ -49,6 +49,7 @@ public class SetGameruleCommand implements ICommandExecutor {
         };
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public ICommandResult execute(final ICommandContext context) throws CommandException {
         final ServerWorld serverWorld = context.getWorldPropertiesOrFromSelfOptional(NucleusParameters.ONLINE_WORLD.key())

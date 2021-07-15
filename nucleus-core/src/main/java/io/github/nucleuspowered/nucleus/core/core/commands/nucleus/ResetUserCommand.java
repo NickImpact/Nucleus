@@ -12,7 +12,6 @@ import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandExecutor;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandResult;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.NucleusParameters;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.annotation.Command;
-import io.github.nucleuspowered.nucleus.core.scaffold.command.parameter.UUIDParameter;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.github.nucleuspowered.nucleus.core.services.impl.storage.dataobjects.modular.IUserDataObject;
 import io.github.nucleuspowered.nucleus.core.services.impl.storage.queryobjects.IUserQueryObject;
@@ -55,8 +54,7 @@ import java.util.function.Consumer;
 )
 public class ResetUserCommand implements ICommandExecutor {
 
-    private final String userKey = "user";
-    private final String uuidKey = "UUID";
+    private static final Parameter.Value<UUID> UUID_PARAMETER = Parameter.uuid().key("user").build();
 
     private final Map<UUID, Delete> callbacks = new HashMap<>();
 
@@ -72,17 +70,21 @@ public class ResetUserCommand implements ICommandExecutor {
         return new Parameter[] {
                 Parameter.firstOf(
                         NucleusParameters.ONE_USER,
-                        Parameter.builder(User.class)
-                                .key(NucleusParameters.ONE_USER.key())
-                                .addParser(UUIDParameter.user(serviceCollection.messageProvider()))
-                                .build()
+                        ResetUserCommand.UUID_PARAMETER
                 )
         };
     }
 
     @Override
     public ICommandResult execute(final ICommandContext context) throws CommandException {
-        final User user = context.requireOne(NucleusParameters.ONE_USER);
+        final User user;
+        final Optional<User> o = context.getOne(NucleusParameters.ONE_USER);
+        if (o.isPresent()) {
+            user = o.get();
+        } else {
+            final UUID uuid = context.requireOne(ResetUserCommand.UUID_PARAMETER);
+            user = Sponge.server().userManager().find(uuid).orElseThrow(() -> context.createException("args.uuid.notvalid.nomatch"));
+        }
         final boolean deleteall = context.hasFlag("a");
         final UUID responsible = context.uniqueId().orElse(Util.CONSOLE_FAKE_UUID);
 
@@ -189,7 +191,7 @@ public class ResetUserCommand implements ICommandExecutor {
             // Ban temporarily.
             final BanService bss = Sponge.server().serviceProvider().banService();
             final CompletableFuture<Optional<? extends Ban>> future =
-                    bss.addBan(Ban.builder().type(BanTypes.PROFILE)
+                    bss.add(Ban.builder().type(BanTypes.PROFILE)
                             .expirationDate(Instant.now().plus(30, ChronoUnit.SECONDS)).profile(user.profile())
                             .build());
 
@@ -219,7 +221,7 @@ public class ResetUserCommand implements ICommandExecutor {
                 } catch (final Exception e) {
                     source.sendMessage(messageProvider.getMessageFor(source, "command.nucleus.reset.failed", user.name()));
                 } finally {
-                    ban.ifPresent(bss::removeBan);
+                    ban.ifPresent(bss::remove);
                 }
             } , 1, TimeUnit.SECONDS);
         }

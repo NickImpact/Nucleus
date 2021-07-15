@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.core.util;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public final class AdventureUtils {
 
@@ -14,7 +14,7 @@ public final class AdventureUtils {
     }
 
     public static String getContent(final Component component) {
-        return PlainComponentSerializer.plain().serialize(component);
+        return PlainTextComponentSerializer.plainText().serialize(component);
     }
 
 }

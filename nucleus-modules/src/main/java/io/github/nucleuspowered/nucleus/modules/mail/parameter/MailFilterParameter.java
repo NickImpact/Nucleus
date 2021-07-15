@@ -9,6 +9,7 @@ import io.github.nucleuspowered.nucleus.api.module.mail.NucleusMailService;
 import io.github.nucleuspowered.nucleus.modules.mail.services.MailHandler;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -48,7 +49,7 @@ public class MailFilterParameter implements ValueParameter<NucleusMailService.Ma
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String currentInput) {
+    public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
         return Collections.emptyList();
     }
 

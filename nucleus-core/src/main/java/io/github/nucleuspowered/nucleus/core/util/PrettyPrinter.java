@@ -2,7 +2,6 @@
  * This file is part of Nucleus, licensed under the MIT License (MIT). See the LICENSE.txt file
  * at the root of this project for more details.
  */
-
 // This is mostly from Mixin
 
 /*
@@ -32,13 +31,14 @@
 package io.github.nucleuspowered.nucleus.core.util;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -50,12 +50,15 @@ import java.util.regex.Pattern;
  */
 public class PrettyPrinter {
 
-    private static final ImmutableMap<Level, BiConsumer<Logger, String>> LOGGER_LEVEL =
-            ImmutableMap.<Level, BiConsumer<Logger, String>>builder()
-                .put(Level.INFO, Logger::info)
-                .put(Level.WARN, Logger::warn)
-                .put(Level.ERROR, Logger::error)
-                .build();
+    private static Map<Level, BiConsumer<Logger, String>> createLoggerLevel() {
+        final Map<Level, BiConsumer<Logger, String>> map = new HashMap<>();
+        map.put(Level.INFO, Logger::info);
+        map.put(Level.WARN, Logger::warn);
+        map.put(Level.ERROR, Logger::error);
+        return Collections.unmodifiableMap(map);
+    }
+
+    private static final Map<Level, BiConsumer<Logger, String>> LOGGER_LEVEL = PrettyPrinter.createLoggerLevel();
     private static final BiConsumer<Logger, String> DEFAULT_LOGGER = Logger::info;
 
     /**

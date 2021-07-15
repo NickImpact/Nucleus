@@ -4,6 +4,7 @@
  */
 package io.github.nucleuspowered.nucleus.core.services.impl.modulereporter;
 
+import com.google.inject.Singleton;
 import io.github.nucleuspowered.nucleus.core.module.ModuleContainer;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IModuleReporter;
 
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
+@Singleton
 public final class ModuleReporter implements IModuleReporter {
 
     private final Collection<String> discoveredModules = new ArrayList<>();

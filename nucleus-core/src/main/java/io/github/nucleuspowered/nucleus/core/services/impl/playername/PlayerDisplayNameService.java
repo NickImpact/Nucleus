@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.services.impl.playername;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.github.nucleuspowered.nucleus.core.Constants;
@@ -127,7 +126,7 @@ public class PlayerDisplayNameService implements IPlayerDisplayNameService, IRel
     @Override
     public Component getDisplayName(final UUID playerUUID) {
         final TextComponent.Builder builder;
-        if (playerUUID == Util.CONSOLE_FAKE_UUID) {
+        if (playerUUID.equals(Util.CONSOLE_FAKE_UUID)) {
             return this.getName(Sponge.systemSubject());
         }
        final User user = Sponge.server()

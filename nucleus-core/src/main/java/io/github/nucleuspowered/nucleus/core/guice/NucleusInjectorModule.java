@@ -10,6 +10,10 @@ import com.google.inject.TypeLiteral;
 import io.github.nucleuspowered.nucleus.core.IPluginInfo;
 import io.github.nucleuspowered.nucleus.core.NucleusCore;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
+import io.github.nucleuspowered.nucleus.core.services.impl.timing.DummyTimingsService;
+import io.github.nucleuspowered.nucleus.core.services.impl.timing.TimingsService;
+import io.github.nucleuspowered.nucleus.core.services.interfaces.ITimingsService;
+import org.spongepowered.plugin.PluginContainer;
 
 import java.nio.file.Path;
 import java.util.function.Supplier;
@@ -40,6 +44,15 @@ public class NucleusInjectorModule extends AbstractModule {
     @Provides
     private INucleusServiceCollection provideServiceCollection() {
         return this.coreSupplier.get().getServiceCollection();
+    }
+
+    @Provides
+    private ITimingsService provideTimingsService(final PluginContainer container) {
+        try {
+            return new TimingsService(container);
+        } catch (final Exception ex) {
+            return new DummyTimingsService();
+        }
     }
 
 }

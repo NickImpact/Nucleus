@@ -69,18 +69,18 @@ public final class InfoCommand implements ICommandExecutor {
         final PluginContainer implementation = platform.container(Platform.Component.IMPLEMENTATION);
         final PluginContainer api = platform.container(Platform.Component.API);
 
-        information.add(String.format("Minecraft Version: %s %s", game.getMetadata().getName().orElse("unknown"), game.getMetadata().getVersion()));
-        information.add(String.format("Sponge Version: %s %s", implementation.getMetadata().getName().orElse("unknown"),
-                implementation.getMetadata().getVersion()));
-        information.add(String.format("Sponge API Version: %s %s", api.getMetadata().getName().orElse("unknown"), api.getMetadata().getVersion()));
+        information.add(String.format("Minecraft Version: %s %s", game.metadata().name().orElse("unknown"), game.metadata().version()));
+        information.add(String.format("Sponge Version: %s %s", implementation.metadata().name().orElse("unknown"),
+                implementation.metadata().version()));
+        information.add(String.format("Sponge API Version: %s %s", api.metadata().name().orElse("unknown"), api.metadata().version()));
         information.add("Nucleus Version: " + this.pluginInfo.version() + " (Git: " + this.pluginInfo.gitHash() + ")");
 
         information.add(separator);
         information.add("Plugins");
         information.add(separator);
 
-        Sponge.pluginManager().plugins().forEach(x -> information.add(x.getMetadata().getName().orElse("unknown") + " (" + x.getMetadata().getId() + ") "
-                + "version " + x.getMetadata().getVersion()));
+        Sponge.pluginManager().plugins().forEach(x -> information.add(x.metadata().name().orElse("unknown") + " (" + x.metadata().id() + ") "
+                + "version " + x.metadata().version()));
 
         information.add(separator);
         information.add("Registered Commands");
@@ -96,8 +96,8 @@ public final class InfoCommand implements ICommandExecutor {
                 .forEach(x -> {
                     final Set<String> a = x.allAliases();
                     final PluginContainer container = x.plugin();
-                    final String id = container.getMetadata().getId();
-                    final String info = " - " + container.getMetadata().getName() + " (" + id + ") version " + container.getMetadata().getVersion();
+                    final String id = container.metadata().id();
+                    final String info = " - " + container.metadata().name().orElse("unknown") + " (" + id + ") version " + container.metadata().version();
                     a.forEach(y -> {
                         if (y.startsWith(id + ":")) {
                             // /nucleus:<blah>

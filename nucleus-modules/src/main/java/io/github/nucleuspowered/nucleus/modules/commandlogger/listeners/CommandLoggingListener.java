@@ -57,7 +57,7 @@ public class CommandLoggingListener implements IReloadableService.Reloadable, Li
     }
 
     @Listener(order = Order.LAST)
-    public void onCommand(final ExecuteCommandEvent.Post event) {
+    public void onCommand(final ExecuteCommandEvent.Pre event) {
         final Object source = event.cause().root();
         // Check source.
         final boolean accept;
@@ -94,7 +94,7 @@ public class CommandLoggingListener implements IReloadableService.Reloadable, Li
                             } else if (x instanceof SystemSubject) {
                                 return "Server";
                             } else {
-                                return "(plugin) " + ((PluginContainer) x).getMetadata().getName();
+                                return "(plugin) " + ((PluginContainer) x).metadata().name();
                             }
                         })
                         .collect(Collectors.toList());

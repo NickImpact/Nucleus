@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.playerinfo.services;
 
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.api.module.playerinfo.NucleusSeenService;
 import io.github.nucleuspowered.nucleus.core.scaffold.service.ServiceBase;
@@ -23,12 +22,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 @APIService(NucleusSeenService.class)
 public class SeenHandler implements NucleusSeenService, ServiceBase {
 
     private final INucleusServiceCollection serviceCollection;
-    private final Map<String, List<SeenInformationProvider>> pluginInformationProviders = Maps.newTreeMap();
+    private final Map<String, List<SeenInformationProvider>> pluginInformationProviders = new TreeMap<>();
 
     @Inject
     public SeenHandler(final INucleusServiceCollection serviceCollection) {
@@ -40,7 +40,7 @@ public class SeenHandler implements NucleusSeenService, ServiceBase {
         Objects.requireNonNull(plugin);
         Objects.requireNonNull(seenInformationProvider);
 
-        final String name = plugin.getMetadata().getName().orElseGet(plugin.getMetadata()::getId);
+        final String name = plugin.metadata().name().orElseGet(plugin.metadata()::id);
         final List<SeenInformationProvider> providers;
         if (this.pluginInformationProviders.containsKey(name)) {
             providers = this.pluginInformationProviders.get(name);

@@ -4,33 +4,33 @@
  */
 package io.github.nucleuspowered.nucleus.modules.kit.storage;
 
-import com.google.common.collect.ImmutableMap;
 import io.github.nucleuspowered.nucleus.api.module.kit.data.Kit;
 import io.github.nucleuspowered.nucleus.modules.kit.serialiser.SingleKitTypeSerialiser;
 import io.github.nucleuspowered.nucleus.core.services.impl.storage.dataobjects.configurate.AbstractConfigurateBackedDataObject;
 import org.spongepowered.configurate.ConfigurationNode;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class KitDataObject extends AbstractConfigurateBackedDataObject implements IKitDataObject {
 
-    private ImmutableMap<String, Kit> cached;
+    private Map<String, Kit> cached;
 
     @Override
-    public ImmutableMap<String, Kit> getKitMap() {
+    public Map<String, Kit> getKitMap() {
         if (this.cached == null) {
             try {
                 final Map<String, Kit> map = SingleKitTypeSerialiser.INSTANCE.deserialize(this.backingNode);
                 if (map == null) {
-                    this.cached = ImmutableMap.of();
+                    this.cached = Collections.emptyMap();
                 } else {
-                    this.cached = ImmutableMap.copyOf(map);
+                    this.cached = Collections.unmodifiableMap(new HashMap<>(map));
                 }
             } catch (final Exception e) {
                 e.printStackTrace();
-                return ImmutableMap.of();
+                return Collections.emptyMap();
             }
         }
         return this.cached;
@@ -39,7 +39,7 @@ public class KitDataObject extends AbstractConfigurateBackedDataObject implement
     @Override
     public void setKitMap(final Map<String, Kit> map) throws Exception {
         SingleKitTypeSerialiser.INSTANCE.serialize(map, this.backingNode);
-        this.cached = ImmutableMap.copyOf(map);
+        this.cached = Collections.unmodifiableMap(map);
     }
 
     @Override

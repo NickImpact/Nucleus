@@ -93,13 +93,13 @@ public class NamedLocationSerialiser implements TypeSerializer<NamedLocation> {
     public static void serializeLocation(final NamedLocation obj, final ConfigurationNode value) throws SerializationException {
         value.node("world").set(TypeTokens.RESOURCE_KEY, obj.getResourceKey());
 
-        value.node("x").set(obj.getPosition().getX());
-        value.node("y").set(obj.getPosition().getY());
-        value.node("z").set(obj.getPosition().getZ());
+        value.node("x").set(obj.getPosition().x());
+        value.node("y").set(obj.getPosition().y());
+        value.node("z").set(obj.getPosition().z());
 
-        value.node("rotx").set(obj.getRotation().getX());
-        value.node("roty").set(obj.getRotation().getY());
-        value.node("rotz").set(obj.getRotation().getZ());
+        value.node("rotx").set(obj.getRotation().x());
+        value.node("roty").set(obj.getRotation().y());
+        value.node("rotz").set(obj.getRotation().z());
 
         value.node("name").set(obj.getName());
     }

@@ -15,9 +15,8 @@ import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.world.Locatable;
 import org.spongepowered.api.world.server.ServerLocation;
-import org.spongepowered.api.world.WorldBorder;
+import org.spongepowered.api.world.border.WorldBorder;
 import org.spongepowered.api.world.server.ServerWorld;
-import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.time.Duration;
 
@@ -70,19 +69,20 @@ public class SetBorderCommand implements ICommandExecutor {
             z = context.requireOne(this.zParam);
         }
 
-        final WorldBorder border = wp.properties().worldBorder();
+        final WorldBorder.Builder border = wp.border().toBuilder();
         // Now, if we have an x and a z key, get the centre from that.
-        border.setCenter(x, z);
+        border.center(x, z);
 
+        border.targetDiameter(dia);
         if (delay == Duration.ZERO) {
-            border.setDiameter(dia);
             context.sendMessage("command.world.setborder.set",
                     wp.key().asString(),
                     String.valueOf(x),
                     String.valueOf(z),
                     String.valueOf(dia));
         } else {
-            border.setDiameter(dia, delay);
+            border.targetDiameter(dia);
+            border.timeToTargetDiameter(delay);
             context.sendMessage("command.world.setborder.setdelay",
                     wp.key().asString(),
                     String.valueOf(x),
@@ -91,6 +91,8 @@ public class SetBorderCommand implements ICommandExecutor {
                     String.valueOf(delay));
         }
 
+        final WorldBorder newBorder = border.build();
+        wp.setBorder(newBorder);
         return context.successResult();
     }
 

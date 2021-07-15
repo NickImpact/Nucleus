@@ -5,8 +5,9 @@
 package io.github.nucleuspowered.nucleus.core.module;
 
 import com.google.inject.Injector;
+import org.jetbrains.annotations.NotNull;
 
-public class ModuleContainer {
+public class ModuleContainer implements Comparable<ModuleContainer> {
 
     private final String id;
     private final String name;
@@ -42,6 +43,11 @@ public class ModuleContainer {
 
     public IModule construct(final Injector injector) {
         return injector.getInstance(this.moduleClass);
+    }
+
+    @Override
+    public int compareTo(@NotNull ModuleContainer o) {
+        return this.id.compareTo(o.id);
     }
 
     public static final class Configurable<T> extends ModuleContainer {

@@ -4,11 +4,10 @@
  */
 package io.github.nucleuspowered.nucleus.modules.rtp.commands;
 
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.api.module.rtp.NucleusRTPService;
 import io.github.nucleuspowered.nucleus.api.module.rtp.kernel.RTPKernel;
+import io.github.nucleuspowered.nucleus.core.services.interfaces.ITimingsService;
 import io.github.nucleuspowered.nucleus.modules.rtp.RTPPermissions;
 import io.github.nucleuspowered.nucleus.modules.rtp.config.RTPConfig;
 import io.github.nucleuspowered.nucleus.modules.rtp.events.RTPSelectedLocationEvent;
@@ -67,11 +66,11 @@ public class RandomTeleportCommand implements ICommandExecutor, IReloadableServi
     private RTPConfig rc = new RTPConfig();
     private final Map<ScheduledTask, UUID> cachedTasks = new WeakHashMap<>();
 
-    private final Timing timings;
+    private final ITimingsService.ITiming timings;
 
     @Inject
     public RandomTeleportCommand(final INucleusServiceCollection serviceCollection) {
-        this.timings = Timings.of(serviceCollection.pluginContainer(), "RTP task");
+        this.timings = serviceCollection.timingsService().of("RTP task");
     }
 
     @Override public Parameter[] parameters(final INucleusServiceCollection serviceCollection) {
@@ -84,7 +83,7 @@ public class RandomTeleportCommand implements ICommandExecutor, IReloadableServi
     @Override public ICommandResult execute(final ICommandContext context) throws CommandException {
         final ServerPlayer player = context.getPlayerFromArgs();
         synchronized (this.cachedTasks) {
-            this.cachedTasks.keySet().removeIf(task -> !Sponge.server().scheduler().taskById(task.uniqueId()).isPresent());
+            this.cachedTasks.keySet().removeIf(task -> !Sponge.server().scheduler().findTask(task.uniqueId()).isPresent());
             if (this.cachedTasks.containsValue(player.uniqueId())) {
                 return context.errorResult("command.rtp.inprogress", player.name());
             }
@@ -179,7 +178,7 @@ public class RandomTeleportCommand implements ICommandExecutor, IReloadableServi
                 return;
             }
 
-            try (final Timing dummy = RandomTeleportCommand.this.timings.startTiming()) {
+            try (final ITimingsService.ITiming dummy = RandomTeleportCommand.this.timings.start()) {
                 this.logger.debug(String.format("RTP of %s, attempt %s of %s", serverPlayer.name(), this.maxCount - this.count, this.maxCount));
 
                 int counter = 0;

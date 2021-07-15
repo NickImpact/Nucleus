@@ -23,13 +23,14 @@ import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.event.CauseStackManager;
 import org.spongepowered.api.world.server.ServerLocation;
-import org.spongepowered.api.world.WorldBorder;
+import org.spongepowered.api.world.border.WorldBorder;
 import org.spongepowered.api.world.server.ServerWorld;
 import org.spongepowered.api.world.teleport.TeleportHelper;
 import org.spongepowered.api.world.teleport.TeleportHelperFilter;
 import org.spongepowered.api.world.teleport.TeleportHelperFilters;
 import org.spongepowered.math.vector.Vector3d;
 
+import java.lang.ref.WeakReference;
 import java.util.Optional;
 
 @Singleton
@@ -164,10 +165,11 @@ public class SafeLocationService implements INucleusLocationService, IReloadable
         this.config = serviceCollection.configProvider().getCoreConfig().getSafeTeleportConfig();
     }
 
-    @Override public BorderDisableSession temporarilyDisableBorder(final boolean reset, final ServerWorld world) {
+    @Override
+    public BorderDisableSession temporarilyDisableBorder(final boolean reset, final ServerWorld world) {
         if (reset) {
             final WorldBorder border = world.border();
-            return new WorldBorderReset(border);
+            return new WorldBorderReset(world, border);
         }
 
         return DUMMY;
@@ -175,22 +177,21 @@ public class SafeLocationService implements INucleusLocationService, IReloadable
 
     static class WorldBorderReset implements BorderDisableSession {
 
-        private final double x;
-        private final double z;
-        private final double diameter;
         private final WorldBorder border;
+        private final WeakReference<ServerWorld> world;
 
-        WorldBorderReset(final WorldBorder border) {
+        WorldBorderReset(final ServerWorld world, final WorldBorder border) {
             this.border = border;
-            this.x = border.center().getX();
-            this.z = border.center().getZ();
-            this.diameter = border.diameter();
+            this.world = new WeakReference<>(world);
         }
 
         @Override
         public void close() {
-            this.border.setCenter(this.x, this.z);
-            this.border.setDiameter(this.diameter);
+            final ServerWorld world = this.world.get();
+            if (world != null) {
+                world.setBorder(this.border);
+            }
         }
     }
+
 }

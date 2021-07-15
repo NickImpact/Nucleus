@@ -10,11 +10,13 @@ public class PlaceholderMetadata {
     private final String token;
     private final PlaceholderParser parser;
     private final boolean document;
+    private final boolean isDuplicate;
 
-    PlaceholderMetadata(final String token, final PlaceholderParser parser, final boolean document) {
+    PlaceholderMetadata(final String token, final PlaceholderParser parser, final boolean document, final boolean isDuplicate) {
         this.token = token;
         this.parser = parser;
         this.document = document;
+        this.isDuplicate = isDuplicate;
     }
 
     public String getToken() {
@@ -27,5 +29,9 @@ public class PlaceholderMetadata {
 
     public boolean isDocument() {
         return this.document;
+    }
+
+    public boolean isDuplicate() {
+        return this.isDuplicate;
     }
 }

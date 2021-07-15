@@ -4,12 +4,9 @@
  */
 package io.github.nucleuspowered.nucleus.modules.playerinfo.commands;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.core.Util;
 import io.github.nucleuspowered.nucleus.core.core.CoreKeys;
-import io.github.nucleuspowered.nucleus.modules.misc.commands.SpeedCommand;
-import io.github.nucleuspowered.nucleus.modules.playerinfo.PlayerInfoPermissions;
-import io.github.nucleuspowered.nucleus.modules.playerinfo.services.SeenHandler;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandContext;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandExecutor;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandResult;
@@ -20,7 +17,10 @@ import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.github.nucleuspowered.nucleus.core.services.impl.storage.dataobjects.modular.IUserDataObject;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IPlayerInformationService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IPlayerOnlineService;
-import io.github.nucleuspowered.nucleus.core.util.functional.TriFunction;
+import io.github.nucleuspowered.nucleus.modules.misc.commands.SpeedCommand;
+import io.github.nucleuspowered.nucleus.modules.playerinfo.PlayerInfoPermissions;
+import io.github.nucleuspowered.nucleus.modules.playerinfo.services.SeenHandler;
+import io.vavr.Function3;
 import io.vavr.control.Either;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -39,7 +39,6 @@ import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.util.Tuple;
 import org.spongepowered.api.world.server.ServerLocation;
-import org.spongepowered.api.world.storage.WorldProperties;
 import org.spongepowered.math.vector.Vector3d;
 
 import java.text.DecimalFormat;
@@ -50,6 +49,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -78,19 +79,23 @@ public class SeenCommand implements ICommandExecutor {
     private static final NumberFormat NUMBER_FORMATTER = new DecimalFormat("0.00");
 
     // keeps order!
-    private final ImmutableMap<String, TriFunction<ICommandContext, User, IUserDataObject, Component>> entries
-            = ImmutableMap.<String, TriFunction<ICommandContext, User, IUserDataObject, Component>>builder()
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_UUID, this::getUUID)
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_IP, this::getIP)
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_FIRSTPLAYED, this::getFirstPlayed)
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_LASTPLAYED, this::getLastPlayed)
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_SPEED_WALKING, this::getWalkingSpeed)
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_SPEED_FLYING, this::getFlyingSpeed)
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_LOCATION, this::getLocation)
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_CAN_FLY, this::getCanFly)
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_IS_FLYING, this::getIsFlying)
-                    .put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_GAMEMODE, this::getGameMode)
-                    .build();
+    private final Map<String, Function3<ICommandContext, User, IUserDataObject, Component>> entries;
+
+    @Inject
+    public SeenCommand() {
+        final Map<String, Function3<ICommandContext, User, IUserDataObject, Component>> m = new LinkedHashMap<>();
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_UUID, this::getUUID);
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_IP, this::getIP);
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_FIRSTPLAYED, this::getFirstPlayed);
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_LASTPLAYED, this::getLastPlayed);
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_SPEED_WALKING, this::getWalkingSpeed);
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_SPEED_FLYING, this::getFlyingSpeed);
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_LOCATION, this::getLocation);
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_CAN_FLY, this::getCanFly);
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_IS_FLYING, this::getIsFlying);
+        m.put(PlayerInfoPermissions.SEEN_EXTENDEDPERMS_GAMEMODE, this::getGameMode);
+        this.entries = Collections.unmodifiableMap(m);
+    }
 
     @Nullable
     private Component getUUID(final ICommandContext context, final User user, final IUserDataObject userDataModule) {
@@ -213,9 +218,9 @@ public class SeenCommand implements ICommandExecutor {
         messages.add(context.getMessage("command.seen.displayname", context.getDisplayName(user.uniqueId())));
 
         messages.add(Component.empty());
-        for (final Map.Entry<String, TriFunction<ICommandContext, User, IUserDataObject, Component>> entry : this.entries.entrySet()) {
+        for (final Map.Entry<String, Function3<ICommandContext, User, IUserDataObject, Component>> entry : this.entries.entrySet()) {
             if (context.testPermission(entry.getKey())) {
-                @Nullable final Component m = entry.getValue().accept(context, user, userDataObject);
+                @Nullable final Component m = entry.getValue().apply(context, user, userDataObject);
                 if (m != null) {
                     messages.add(m);
                 }

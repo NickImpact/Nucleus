@@ -9,6 +9,7 @@ import io.github.nucleuspowered.nucleus.modules.home.services.HomeService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -38,16 +39,20 @@ public class HomeParameter implements ValueParameter<Home> {
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String currentInput) {
+    public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
         final Collection<String> s;
         try {
-            s = this.getTarget(context).map(this.homeService::getHomeNames).orElseGet(Collections::emptyList);
+            s = this.getTarget(context)
+                    .map(this.homeService::getHomeNames)
+                    .orElseGet(Collections::emptyList);
         } catch (final Exception e) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         final String name = currentInput.toLowerCase();
-        return s.stream().filter(x -> x.toLowerCase().startsWith(name)).limit(20).collect(Collectors.toList());
+        return s.stream().filter(x -> x.toLowerCase().startsWith(name)).limit(20)
+                .map(CommandCompletion::of)
+                .collect(Collectors.toList());
     }
 
     @Override

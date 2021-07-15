@@ -11,14 +11,14 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.type.Include;
-import org.spongepowered.api.event.message.MessageChannelEvent;
+import org.spongepowered.api.event.message.AudienceMessageEvent;
 import org.spongepowered.api.event.network.ServerSideConnectionEvent;
 
 public class ConnectionMessagesForceListener implements ListenerBase.Conditional {
 
     @Listener(order = Order.LAST)
     @Include({ServerSideConnectionEvent.Disconnect.class, ServerSideConnectionEvent.Join.class})
-    public void onPlayerLogin(final MessageChannelEvent joinEvent) {
+    public void onPlayerLogin(final AudienceMessageEvent joinEvent) {
         joinEvent.setAudience(Sponge.server());
     }
 

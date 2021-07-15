@@ -5,6 +5,7 @@
 package io.github.nucleuspowered.nucleus.core.services.impl.commandelement;
 
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -25,8 +26,10 @@ public final class LocaleElement implements ValueParameter<Locale> {
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String string) {
-        return this.serviceCollection.messageProvider().getAllLocaleNames().stream().filter(x -> x.startsWith(string)).collect(Collectors.toList());
+    public List<CommandCompletion> complete(final CommandContext context, final String string) {
+        return this.serviceCollection.messageProvider().getAllLocaleNames().stream().filter(x -> x.startsWith(string))
+                .map(CommandCompletion::of)
+                .collect(Collectors.toList());
     }
 
     @Override

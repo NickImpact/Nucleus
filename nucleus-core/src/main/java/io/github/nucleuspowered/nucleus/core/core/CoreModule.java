@@ -17,6 +17,7 @@ import io.github.nucleuspowered.nucleus.core.core.commands.nucleus.MessagesUpdat
 import io.github.nucleuspowered.nucleus.core.core.commands.nucleus.PrintPermsCommand;
 import io.github.nucleuspowered.nucleus.core.core.commands.nucleus.RebuildUserCacheCommand;
 import io.github.nucleuspowered.nucleus.core.core.commands.nucleus.ReloadCommand;
+import io.github.nucleuspowered.nucleus.core.core.commands.nucleus.ResetFirstJoinCommand;
 import io.github.nucleuspowered.nucleus.core.core.commands.nucleus.ResetUserCommand;
 import io.github.nucleuspowered.nucleus.core.core.commands.nucleus.SaveCommand;
 import io.github.nucleuspowered.nucleus.core.core.commands.nucleus.debug.RefreshUniqueVisitors;
@@ -64,6 +65,7 @@ public class CoreModule implements IModule.Configurable<CoreConfig> {
                 PrintPermsCommand.class,
                 RebuildUserCacheCommand.class,
                 ReloadCommand.class,
+                ResetFirstJoinCommand.class,
                 ResetUserCommand.class,
                 SaveCommand.class,
                 CommandInfoCommand.class,

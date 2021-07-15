@@ -20,7 +20,6 @@ import net.kyori.adventure.text.LinearComponents;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.PlayerChatRouter;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.message.PlayerChatEvent;
 
@@ -83,7 +82,7 @@ public class StaffChatMessageChannel implements IChatMessageFormatterService.Cha
 
     @Override
     public void formatMessageEvent(final Audience audience, final PlayerChatEvent event) {
-        event.setChatRouter(PlayerChatRouter.toAudience(this.receivers()));
+        event.setAudience(this.receivers());
         event.setMessage(this.formatMessage(audience, event.message()));
     }
 

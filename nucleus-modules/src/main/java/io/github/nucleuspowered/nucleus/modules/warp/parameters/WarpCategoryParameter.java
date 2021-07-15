@@ -8,6 +8,7 @@ import io.github.nucleuspowered.nucleus.api.module.warp.data.WarpCategory;
 import io.github.nucleuspowered.nucleus.modules.warp.services.WarpService;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -30,9 +31,10 @@ public class WarpCategoryParameter implements ValueParameter<WarpCategory> {
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String currentInput) {
-        return this.handler.getWarpsWithCategories().keySet().stream().filter(Objects::nonNull).map(WarpCategory::getId)
-                .filter(x -> x.startsWith(currentInput))
+    public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
+        return this.handler.getWarpsWithCategories().keySet().stream().filter(Objects::nonNull)
+                .filter(x -> x.getId().startsWith(currentInput))
+                .map(x -> CommandCompletion.of(x.getId(), x.getDisplayName()))
                 .collect(Collectors.toList());
     }
 

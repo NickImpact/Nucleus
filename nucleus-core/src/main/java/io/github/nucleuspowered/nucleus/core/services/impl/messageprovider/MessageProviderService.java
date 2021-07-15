@@ -7,8 +7,6 @@ package io.github.nucleuspowered.nucleus.core.services.impl.messageprovider;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.github.nucleuspowered.nucleus.api.core.NucleusUserPreferenceService;
@@ -33,7 +31,10 @@ import org.spongepowered.api.util.locale.Locales;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.time.Duration;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -50,18 +51,22 @@ public class MessageProviderService implements IMessageProviderService, IReloada
 
     private static final String MESSAGES_BUNDLE_RESOURCE_LOC = "messages_{0}.properties";
 
-    private static final Set<Locale> KNOWN_LOCALES = ImmutableSet.<Locale>builder()
-            .add(Locale.UK)
-            .add(Locale.FRANCE)
-            .add(Locale.GERMANY)
-            .add(Locales.ES_ES)
-            .add(Locale.ITALY)
-            .add(Locales.PT_BR)
-            .add(Locale.SIMPLIFIED_CHINESE)
-            .add(Locale.TRADITIONAL_CHINESE)
-            .add(Locales.RU_RU)
-            .build();
+    private static final Set<Locale> KNOWN_LOCALES;
     private static final Map<String, Locale> LOCALES = new HashMap<>();
+
+    static {
+        final Set<Locale> locales = new HashSet<>();
+        locales.add(Locale.UK);
+        locales.add(Locale.FRANCE);
+        locales.add(Locale.GERMANY);
+        locales.add(Locales.ES_ES);
+        locales.add(Locale.ITALY);
+        locales.add(Locales.PT_BR);
+        locales.add(Locale.SIMPLIFIED_CHINESE);
+        locales.add(Locale.TRADITIONAL_CHINESE);
+        locales.add(Locales.RU_RU);
+        KNOWN_LOCALES = locales;
+    }
 
     private final INucleusServiceCollection serviceCollection;
     private final IUserPreferenceService userPreferenceService;
@@ -281,8 +286,8 @@ public class MessageProviderService implements IMessageProviderService, IReloada
     }
 
     @Override
-    public List<String> getAllLocaleNames() {
-        return ImmutableList.copyOf(LOCALES.keySet());
+    public Collection<String> getAllLocaleNames() {
+        return Collections.unmodifiableCollection(LOCALES.keySet());
     }
 
     private void appendComma(final StringBuilder stringBuilder) {

@@ -4,8 +4,6 @@
  */
 package io.github.nucleuspowered.storage.queryobjects;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,14 +31,16 @@ public abstract class AbstractQueryObject<K, T extends IQueryObject<K, T>> imple
 
     @Override
     public Map<QueryKey<?, T>, List<?>> queries() {
-        return ImmutableMap.copyOf(this.queryKeyObjectMap);
+        return Collections.unmodifiableMap(this.queryKeyObjectMap);
     }
 
-    @Override public void addKey(final K uuid) {
+    @Override
+    public void addKey(final K uuid) {
         this.keys.add(uuid);
     }
 
-    @Override public void addAllKeys(final Collection<K> collection) {
+    @Override
+    public void addAllKeys(final Collection<K> collection) {
         this.keys.addAll(collection);
     }
 

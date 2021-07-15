@@ -15,6 +15,7 @@ import org.spongepowered.api.service.context.ContextCalculator;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.util.Tristate;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -29,7 +30,7 @@ public interface IPermissionService {
 
     void assignRoleToGroup(SuggestedLevel role, Subject subject);
 
-    void registerContextCalculator(ContextCalculator<Subject> calculator);
+    void registerContextCalculator(ContextCalculator calculator);
 
     boolean hasPermission(UUID playerUUID, String permission);
 
@@ -57,7 +58,7 @@ public interface IPermissionService {
 
     PermissionMessageChannel permissionMessageChannel(String permission);
 
-    List<Metadata> getAllMetadata();
+    Collection<Metadata> getAllMetadata();
 
     Optional<Metadata> getMetadataFor(String permission);
 

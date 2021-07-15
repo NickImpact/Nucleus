@@ -6,9 +6,6 @@ package io.github.nucleuspowered.nucleus.core.services.impl.textstyle;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
@@ -33,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -56,67 +54,10 @@ public class TextStyleService implements ITextStyleService {
     private final IMessageProviderService messageProviderService;
 
     // I want these to be fixed names, no Sponge impl should change these.
-    private final BiMap<TextColor, String> colourToPermissionSuffix =
-            HashBiMap.create(ImmutableMap.<TextColor, String>builder()
-                .put(NamedTextColor.AQUA, "aqua")
-                .put(NamedTextColor.BLACK, "black")
-                .put(NamedTextColor.BLUE, "blue")
-                .put(NamedTextColor.DARK_AQUA, "dark_aqua")
-                .put(NamedTextColor.DARK_BLUE, "dark_blue")
-                .put(NamedTextColor.DARK_GRAY, "dark_gray")
-                .put(NamedTextColor.DARK_GREEN, "dark_green")
-                .put(NamedTextColor.DARK_PURPLE, "dark_purple")
-                .put(NamedTextColor.DARK_RED, "dark_red")
-                .put(NamedTextColor.GOLD, "gold")
-                .put(NamedTextColor.GRAY, "gray")
-                .put(NamedTextColor.GREEN, "green")
-                .put(NamedTextColor.LIGHT_PURPLE, "light_purple")
-                .put(NamedTextColor.RED, "red")
-                .put(NamedTextColor.WHITE, "white")
-                .put(NamedTextColor.YELLOW, "yellow")
-                .build());
-
-    private final BiMap<Character, TextColor> idToColour =
-            HashBiMap.create(
-                ImmutableMap.<Character, TextColor>builder()
-                        .put('0', NamedTextColor.BLACK)
-                        .put('1', NamedTextColor.DARK_BLUE)
-                        .put('2', NamedTextColor.DARK_GREEN)
-                        .put('3', NamedTextColor.DARK_AQUA)
-                        .put('4', NamedTextColor.DARK_RED)
-                        .put('5', NamedTextColor.DARK_PURPLE)
-                        .put('6', NamedTextColor.GOLD)
-                        .put('7', NamedTextColor.GRAY)
-                        .put('8', NamedTextColor.DARK_GRAY)
-                        .put('9', NamedTextColor.BLUE)
-                        .put('a', NamedTextColor.GREEN)
-                        .put('b', NamedTextColor.AQUA)
-                        .put('c', NamedTextColor.RED)
-                        .put('d', NamedTextColor.LIGHT_PURPLE)
-                        .put('e', NamedTextColor.YELLOW)
-                        .put('f', NamedTextColor.WHITE)
-                        .build()
-            );
-
-    private final HashBiMap<TextDecoration, String> styleToPerms =
-            HashBiMap.create(
-            ImmutableMap.<TextDecoration, String>builder()
-                    .put(TextDecoration.BOLD, "bold")
-                    .put(TextDecoration.ITALIC, "italic")
-                    .put(TextDecoration.UNDERLINED, "underline")
-                    .put(TextDecoration.STRIKETHROUGH, "strikethrough")
-                    .put(TextDecoration.OBFUSCATED, "obfuscated")
-                    .build());
-    private final BiMap<Character, TextDecoration> idToStyle =
-            HashBiMap.create(
-                    ImmutableMap.<Character, TextDecoration>builder()
-                            .put('l', TextDecoration.BOLD)
-                            .put('o', TextDecoration.ITALIC)
-                            .put('n', TextDecoration.UNDERLINED)
-                            .put('m', TextDecoration.STRIKETHROUGH)
-                            .put('k', TextDecoration.OBFUSCATED)
-                            .build()
-            );
+    private final BiMap<TextColor, String> colourToPermissionSuffix;
+    private final BiMap<Character, TextColor> idToColour;
+    private final BiMap<TextDecoration, String> styleToPerms;
+    private final BiMap<Character, TextDecoration> idToStyle;
 
     private final Style resetStyle;
 
@@ -128,6 +69,60 @@ public class TextStyleService implements ITextStyleService {
         this.permissionService = permissionService;
         this.messageProviderService = messageProviderService;
         this.logger = logger;
+
+        final Map<Character, TextDecoration> its = new HashMap<>();
+        its.put('l', TextDecoration.BOLD);
+        its.put('o', TextDecoration.ITALIC);
+        its.put('n', TextDecoration.UNDERLINED);
+        its.put('m', TextDecoration.STRIKETHROUGH);
+        its.put('k', TextDecoration.OBFUSCATED);
+        this.idToStyle = HashBiMap.create(its);
+
+        final Map<TextDecoration, String> stp = new HashMap<>();
+        stp.put(TextDecoration.BOLD, "bold");
+        stp.put(TextDecoration.ITALIC, "italic");
+        stp.put(TextDecoration.UNDERLINED, "underline");
+        stp.put(TextDecoration.STRIKETHROUGH, "strikethrough");
+        stp.put(TextDecoration.OBFUSCATED, "obfuscated");
+        this.styleToPerms = HashBiMap.create(stp);
+
+        final Map<Character, TextColor> itc = new HashMap<>();
+        itc.put('0', NamedTextColor.BLACK);
+        itc.put('1', NamedTextColor.DARK_BLUE);
+        itc.put('2', NamedTextColor.DARK_GREEN);
+        itc.put('3', NamedTextColor.DARK_AQUA);
+        itc.put('4', NamedTextColor.DARK_RED);
+        itc.put('5', NamedTextColor.DARK_PURPLE);
+        itc.put('6', NamedTextColor.GOLD);
+        itc.put('7', NamedTextColor.GRAY);
+        itc.put('8', NamedTextColor.DARK_GRAY);
+        itc.put('9', NamedTextColor.BLUE);
+        itc.put('a', NamedTextColor.GREEN);
+        itc.put('b', NamedTextColor.AQUA);
+        itc.put('c', NamedTextColor.RED);
+        itc.put('d', NamedTextColor.LIGHT_PURPLE);
+        itc.put('e', NamedTextColor.YELLOW);
+        itc.put('f', NamedTextColor.WHITE);
+        this.idToColour = HashBiMap.create(itc);
+
+        final Map<TextColor, String> ctps = new HashMap<>();
+        ctps.put(NamedTextColor.AQUA, "aqua");
+        ctps.put(NamedTextColor.BLACK, "black");
+        ctps.put(NamedTextColor.BLUE, "blue");
+        ctps.put(NamedTextColor.DARK_AQUA, "dark_aqua");
+        ctps.put(NamedTextColor.DARK_BLUE, "dark_blue");
+        ctps.put(NamedTextColor.DARK_GRAY, "dark_gray");
+        ctps.put(NamedTextColor.DARK_GREEN, "dark_green");
+        ctps.put(NamedTextColor.DARK_PURPLE, "dark_purple");
+        ctps.put(NamedTextColor.DARK_RED, "dark_red");
+        ctps.put(NamedTextColor.GOLD, "gold");
+        ctps.put(NamedTextColor.GRAY, "gray");
+        ctps.put(NamedTextColor.GREEN, "green");
+        ctps.put(NamedTextColor.LIGHT_PURPLE, "light_purple");
+        ctps.put(NamedTextColor.RED, "red");
+        ctps.put(NamedTextColor.WHITE, "white");
+        ctps.put(NamedTextColor.YELLOW, "yellow");
+        this.colourToPermissionSuffix = HashBiMap.create(ctps);
 
         final Style.Builder sb = Style.style();
         for (final TextDecoration decoration : this.styleToPerms.keySet()) {
@@ -170,13 +165,13 @@ public class TextStyleService implements ITextStyleService {
             prefix += ".";
         }
 
-        final ImmutableList.Builder<String> builder = ImmutableList.builder();
+        final List<String> builder = new ArrayList<>();
         for (final Map.Entry<TextDecoration, String> entry : this.styleToPerms.entrySet()) {
             if (style.hasDecoration(entry.getKey())) {
                 builder.add(prefix + entry.getValue());
             }
         }
-        return builder.build();
+        return Collections.unmodifiableList(builder);
     }
 
     @Override
@@ -199,7 +194,7 @@ public class TextStyleService implements ITextStyleService {
                 int oldlength;
                 do {
                     oldlength = message.length();
-                    message = message.replaceAll(p, "");
+                    message = Pattern.compile(p, Pattern.CASE_INSENSITIVE).matcher(p).replaceAll("");
                 } while (oldlength != message.length());
             }
         }
@@ -229,7 +224,7 @@ public class TextStyleService implements ITextStyleService {
                 // Scan the message for any of these tokens.
                 final Pattern pattern = Pattern.compile(p);
                 if (pattern.matcher(oldMessage).find()) {
-                    final ImmutableList.Builder<String> name = ImmutableList.builder();
+                    final List<String> name = new ArrayList<>();
                     // We don't support these.
                     for (final char a : p.toCharArray()) {
                         if (a == '&' || a == '[' || a == ']') {
@@ -246,7 +241,7 @@ public class TextStyleService implements ITextStyleService {
                         }
                     }
 
-                    return name.build();
+                    return Collections.unmodifiableList(name);
                 }
             }
         }
@@ -336,7 +331,8 @@ public class TextStyleService implements ITextStyleService {
     }
 
     private List<Component> flatten(final Component text) {
-        final List<Component> texts = Lists.newArrayList(text);
+        final List<Component> texts = new ArrayList<>();
+        texts.add(text);
         if (!text.children().isEmpty()) {
             text.children().forEach(x -> texts.addAll(this.flatten(x)));
         }

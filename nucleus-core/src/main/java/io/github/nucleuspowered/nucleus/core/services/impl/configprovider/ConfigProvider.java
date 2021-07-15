@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.services.impl.configprovider;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.github.nucleuspowered.nucleus.core.core.config.CoreConfig;
@@ -19,8 +18,10 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.transformation.ConfigurationTransformation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -90,15 +91,17 @@ public class ConfigProvider implements IConfigProvider {
         throw new IllegalArgumentException(configType.getSimpleName() + " does not exist");
     }
 
-    @Override public Map<String, Class<?>> getModuleToConfigType() {
-        return ImmutableMap.copyOf(this.moduleConfigs);
+    @Override
+    public Map<String, Class<?>> getModuleToConfigType() {
+        return Collections.unmodifiableMap(new HashMap<>(this.moduleConfigs));
     }
 
-    @Override public <T> T getDefaultModuleConfig(final Class<T> configType) throws IllegalArgumentException {
+    @Override
+    public <T> T getDefaultModuleConfig(final Class<T> configType) throws IllegalArgumentException {
         if (this.providers.containsKey(configType)) {
             try {
-                return configType.newInstance();
-            } catch (final InstantiationException | IllegalAccessException e) {
+                return configType.getDeclaredConstructor().newInstance();
+            } catch (final InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 throw new IllegalArgumentException("Could not instantiate", e);
             }
         }

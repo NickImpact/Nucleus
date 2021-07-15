@@ -139,7 +139,7 @@ public class MessageHandler implements NucleusPrivateMessagingService, IReloadab
     @Override
     public boolean canSpyOn(final UUID spyingUser, final MessageTarget... sourceToSpyOn) throws IllegalArgumentException {
         if (sourceToSpyOn.length == 0) {
-            throw new IllegalArgumentException("sourceToSpyOn must have at least one CommandSource");
+            throw new IllegalArgumentException("sourceToSpyOn must have at least one MessageTarget");
         }
 
         if (this.isSocialSpy(spyingUser)) {
@@ -166,7 +166,7 @@ public class MessageHandler implements NucleusPrivateMessagingService, IReloadab
     public Set<UUID> onlinePlayersCanSpyOn(final boolean includeConsole, final MessageTarget... sourceToSpyOn)
             throws IllegalArgumentException {
         if (sourceToSpyOn.length == 0) {
-            throw new IllegalArgumentException("sourceToSpyOn must have at least one CommandSource");
+            throw new IllegalArgumentException("sourceToSpyOn must have at least one MessageTarget");
         }
 
         // Get the users to scan.

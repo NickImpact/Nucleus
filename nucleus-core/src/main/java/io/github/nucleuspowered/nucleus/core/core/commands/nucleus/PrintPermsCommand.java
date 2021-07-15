@@ -18,6 +18,7 @@ import org.spongepowered.api.command.exception.CommandException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 )
 public class PrintPermsCommand implements ICommandExecutor {
 
-    private static List<String> onStream(final List<IPermissionService.Metadata> metadata, final SuggestedLevel suggestedLevel) {
+    private static List<String> onStream(final Collection<IPermissionService.Metadata> metadata, final SuggestedLevel suggestedLevel) {
         return metadata.stream()
                 .filter(x -> x.getSuggestedLevel() == suggestedLevel)
                 .map(IPermissionService.Metadata::getPermission)
@@ -39,7 +40,7 @@ public class PrintPermsCommand implements ICommandExecutor {
 
     @Override
     public ICommandResult execute(final ICommandContext context) throws CommandException {
-        final List<IPermissionService.Metadata> l = context.getServiceCollection()
+        final Collection<IPermissionService.Metadata> l = context.getServiceCollection()
                 .permissionService()
                 .getAllMetadata();
 

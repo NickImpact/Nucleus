@@ -6,8 +6,6 @@ package io.github.nucleuspowered.nucleus.modules.nickname.services;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.api.module.nickname.NucleusNicknameService;
 import io.github.nucleuspowered.nucleus.api.module.nickname.exception.NicknameException;
@@ -40,7 +38,9 @@ import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.service.permission.Subject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,7 +128,7 @@ public class NicknameService implements NucleusNicknameService, IReloadableServi
             uuidCollection = this.reverseLowerCaseCache.values();
         }
 
-        final ImmutableMap.Builder<Player, Component> mapToReturn = ImmutableMap.builder();
+        final Map<Player, Component> mapToReturn = new HashMap<>();
         Sponge.server().onlinePlayers().stream()
                 .filter(x -> !this.cache.containsKey(x.uniqueId()))
                 .filter(x -> x.name().toLowerCase().startsWith(prefix))
@@ -140,7 +140,7 @@ public class NicknameService implements NucleusNicknameService, IReloadableServi
             op.ifPresent(player -> mapToReturn.put(player, this.textCache.get(uuid)));
         }
 
-        return mapToReturn.build();
+        return Collections.unmodifiableMap(mapToReturn);
     }
 
     public Map<String, UUID> startsWithGetMap(final String text) {
@@ -333,7 +333,7 @@ public class NicknameService implements NucleusNicknameService, IReloadableServi
 
     private void stripPermissionless(final Subject source, final Component message) throws NicknameException {
         final Collection<String> strings = this.textStyleService.wouldStrip(
-                ImmutableList.of(NicknamePermissions.NICKNAME_COLOUR, NicknamePermissions.NICKNAME_COLOR),
+                Arrays.asList(NicknamePermissions.NICKNAME_COLOUR, NicknamePermissions.NICKNAME_COLOR),
                 NicknamePermissions.NICKNAME_STYLE,
                 source,
                 LegacyComponentSerializer.legacyAmpersand().serialize(message));

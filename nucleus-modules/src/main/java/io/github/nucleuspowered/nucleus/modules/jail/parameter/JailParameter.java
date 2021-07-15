@@ -7,6 +7,8 @@ package io.github.nucleuspowered.nucleus.modules.jail.parameter;
 import io.github.nucleuspowered.nucleus.api.module.jail.data.Jail;
 import io.github.nucleuspowered.nucleus.modules.jail.services.JailService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
+import net.kyori.adventure.text.Component;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -28,8 +30,14 @@ public class JailParameter implements ValueParameter<Jail> {
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String currentInput) {
-        return this.handler.getJails().keySet().stream().filter(x -> x.startsWith(currentInput)).collect(Collectors.toList());
+    public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
+        return this.handler.getJails().entrySet().stream().filter(x -> x.getKey().startsWith(currentInput))
+                .map(x ->
+                    x.getValue().getLocation()
+                            .map(loc -> CommandCompletion.of(x.getKey(), Component.text(loc.toString())))
+                            .orElseGet(() -> CommandCompletion.of(x.getKey()))
+                )
+                .collect(Collectors.toList());
     }
 
     @Override

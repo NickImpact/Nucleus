@@ -30,6 +30,7 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.message.PlayerChatEvent;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -106,9 +107,8 @@ public class ChatListener implements IReloadableService.Reloadable, ListenerBase
             builder.append(footer);
         }
         event.setMessage(body);
-        final Audience audience = Sponge.server();
-        event.setChatRouter((sendingPlayer, message) ->
-                        audience.sendMessage(sendingPlayer, LinearComponents.linear(header, message, footer), MessageType.CHAT));
+        event.setChatFormatter((sender, target, message, originalMessage) ->
+                Optional.of(LinearComponents.linear(header, message, footer)));
     }
 
     @Override

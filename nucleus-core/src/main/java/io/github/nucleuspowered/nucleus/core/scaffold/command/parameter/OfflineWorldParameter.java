@@ -7,6 +7,7 @@ package io.github.nucleuspowered.nucleus.core.scaffold.command.parameter;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -32,10 +33,10 @@ public class OfflineWorldParameter implements ValueParameter<ResourceKey> {
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String input) {
+    public List<CommandCompletion> complete(final CommandContext context, final String input) {
         return Sponge.server().worldManager().offlineWorldKeys().stream()
                 .filter(x -> x.formatted().startsWith(input))
-                .map(Object::toString)
+                .map(x -> CommandCompletion.of(x.asString()))
                 .collect(Collectors.toList());
     }
 

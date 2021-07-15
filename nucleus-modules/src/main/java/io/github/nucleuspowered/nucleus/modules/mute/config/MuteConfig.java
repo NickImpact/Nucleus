@@ -4,12 +4,12 @@
  */
 package io.github.nucleuspowered.nucleus.modules.mute.config;
 
-import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.core.configurate.config.CommonPermissionLevelConfig;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.annotation.configuratehelper.LocalisedComment;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
+import java.util.Arrays;
 import java.util.List;
 
 @ConfigSerializable
@@ -17,7 +17,7 @@ public class MuteConfig {
 
     @Setting(value = "blocked-commands")
     @LocalisedComment("config.mute.blocked")
-    private List<String> blockedCommands = Lists.newArrayList("minecraft:me", "say");
+    private List<String> blockedCommands = Arrays.asList("minecraft:me", "say");
 
     @Setting(value = "maximum-mute-length")
     @LocalisedComment("config.mute.maxmutelength")
@@ -34,10 +34,6 @@ public class MuteConfig {
     @Setting(value = "mute-time-counts-online-only")
     @LocalisedComment("config.mute.countonlineonly")
     private boolean muteOnlineOnly = false;
-
-    @Setting(value = "require-separate-unmute-permission")
-    @LocalisedComment("config.mute.unmute")
-    private boolean requireUnmutePermission = false;
 
     @Setting(value = "mute-permission-levels")
     @LocalisedComment("config.mute.permissionlevel")

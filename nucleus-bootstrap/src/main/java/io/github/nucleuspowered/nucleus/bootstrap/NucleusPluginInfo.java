@@ -11,8 +11,10 @@ import io.github.nucleuspowered.nucleus.core.IPluginInfo;
  *
  * <p>This mostly involves the values that are replaced by Blossom.</p>
  */
+@SuppressWarnings("ConstantConditions")
 public final class NucleusPluginInfo implements IPluginInfo {
-    NucleusPluginInfo() {}
+    NucleusPluginInfo() {
+    }
 
     // This isn't going to change now - will break permissions if we have the token.
     public static final String ID = "nucleus";
@@ -25,6 +27,22 @@ public final class NucleusPluginInfo implements IPluginInfo {
     public static final String DESCRIPTION = "@description@";
 
     public static final String SPONGE_API_VERSION = "@spongeversion@";
+
+    public static final String[] VALID_API_VERSIONS;
+
+    static {
+        String[] vers;
+        try {
+            String s = "@validversions@";
+            if (s.isEmpty()) {
+                s = SPONGE_API_VERSION;
+            }
+            vers = s.split(",");
+        } catch (final Exception e) {
+            vers = new String[] { SPONGE_API_VERSION };
+        }
+        VALID_API_VERSIONS = vers;
+    }
 
     @Override
     public String id() {
@@ -39,6 +57,10 @@ public final class NucleusPluginInfo implements IPluginInfo {
     @Override
     public String version() {
         return NucleusPluginInfo.VERSION;
+    }
+
+    public String[] validVersions() {
+        return NucleusPluginInfo.VALID_API_VERSIONS;
     }
 
     @Override

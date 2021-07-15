@@ -43,7 +43,7 @@ public class NucleusErrorHandler {
 
     public void disable() {
         Sponge.eventManager().unregisterPluginListeners(this.pluginContainer);
-        Sponge.asyncScheduler().tasksByPlugin(this.pluginContainer).forEach(ScheduledTask::cancel);
+        Sponge.asyncScheduler().tasks(this.pluginContainer).forEach(ScheduledTask::cancel);
 
         // Re-register this to warn people about the error.
         Sponge.eventManager().registerListeners(this.pluginContainer, this);
@@ -59,7 +59,7 @@ public class NucleusErrorHandler {
             //ignored
         }
 
-        this.generatePrettyPrint(this.logger, Level.FATAL);
+        this.generatePrettyPrint(this.logger, Level.ERROR);
 
         if (this.shouldShutdown) {
             Sponge.server().shutdown();
@@ -78,7 +78,7 @@ public class NucleusErrorHandler {
         prettyPrinter.hr('-');
         this.createTopLevelMessage(prettyPrinter);
         this.printStackTraceIfAny(prettyPrinter);
-        prettyPrinter.addWrapped("If this error persists, check your configuration files and ensure that you have the latest version of Nucleus which "
+        prettyPrinter.add("If this error persists, check your configuration files and ensure that you have the latest version of Nucleus which "
                 + "matches the current version of the Sponge API.");
         this.createPostStackTraceMessage(prettyPrinter);
         prettyPrinter.add();
@@ -93,11 +93,11 @@ public class NucleusErrorHandler {
         final PluginContainer impl = platform.container(Platform.Component.IMPLEMENTATION);
         prettyPrinter.add("Minecraft version: %s", platform.minecraftVersion().name());
         prettyPrinter.add("Sponge Implementation: %s %s",
-                impl.getMetadata().getName(),
-                impl.getMetadata().getVersion());
+                impl.metadata().name().orElse("unknown"),
+                impl.metadata().version());
         prettyPrinter.add("SpongeAPI: %s %s",
-                api.getMetadata().getName(),
-                api.getMetadata().getVersion());
+                api.metadata().name().orElse("unknown"),
+                api.metadata().version());
         prettyPrinter.log(logger, loggerLevel);
     }
 
@@ -105,14 +105,7 @@ public class NucleusErrorHandler {
         prettyPrinter.add("Nucleus encountered an error during server start up and did not enable successfully.");
     }
 
-    private void printStackTraceIfAny(final PrettyPrinter prettyPrinter) {
-        prettyPrinter.add();
-        prettyPrinter.add("No commands, listeners or tasks are registered.");
-        if (Sponge.platform().type().isServer()) {
-            prettyPrinter
-                    .addWrapped("The server has been automatically whitelisted - this is to protect your server and players if you rely on some of "
-                            + "Nucleus' functionality (such as fly states, etc.)");
-        }
+    protected void printStackTrace(final PrettyPrinter prettyPrinter) {
         prettyPrinter.add("The error that Nucleus encountered will be reproduced below for your convenience.");
         prettyPrinter.hr('-');
 
@@ -122,11 +115,22 @@ public class NucleusErrorHandler {
             prettyPrinter.add("Captured stacktace:");
             prettyPrinter.add(this.capturedThrowable);
         }
+    }
+
+    private void printStackTraceIfAny(final PrettyPrinter prettyPrinter) {
+        prettyPrinter.add();
+        prettyPrinter.add("No commands, listeners or tasks are registered.");
+        if (Sponge.platform().type().isServer()) {
+            prettyPrinter
+                    .add("The server has been automatically whitelisted - this is to protect your server and players if you rely on some of "
+                            + "Nucleus' functionality (such as fly states, etc.)");
+        }
+        this.printStackTrace(prettyPrinter);
         prettyPrinter.hr('-');
     }
 
     protected void createPostStackTraceMessage(final PrettyPrinter prettyPrinter) {
-        prettyPrinter.addWrapped("If you continue to have this error, please report this error to the Nucleus "
+        prettyPrinter.add("If you continue to have this error, please report this error to the Nucleus "
                 + "team at https://github.com/NucleusPowered/Nucleus/issues");
     }
 

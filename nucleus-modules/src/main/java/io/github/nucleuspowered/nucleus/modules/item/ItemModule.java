@@ -16,6 +16,7 @@ import io.github.nucleuspowered.nucleus.modules.item.commands.itemname.ItemNameC
 import io.github.nucleuspowered.nucleus.modules.item.commands.itemname.ItemNameCommand;
 import io.github.nucleuspowered.nucleus.modules.item.commands.itemname.ItemNameSetCommand;
 import io.github.nucleuspowered.nucleus.modules.item.commands.lore.LoreAddCommand;
+import io.github.nucleuspowered.nucleus.modules.item.commands.lore.LoreClearCommand;
 import io.github.nucleuspowered.nucleus.modules.item.commands.lore.LoreCommand;
 import io.github.nucleuspowered.nucleus.modules.item.commands.lore.LoreDeleteCommand;
 import io.github.nucleuspowered.nucleus.modules.item.commands.lore.LoreEditCommand;
@@ -48,6 +49,7 @@ public final class ItemModule implements IModule.Configurable<ItemConfig> {
                 ItemNameSetCommand.class,
                 LoreAddCommand.class,
                 LoreCommand.class,
+                LoreClearCommand.class,
                 LoreDeleteCommand.class,
                 LoreEditCommand.class,
                 LoreInsertCommand.class,

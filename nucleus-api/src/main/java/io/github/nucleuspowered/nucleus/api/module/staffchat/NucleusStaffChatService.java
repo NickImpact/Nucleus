@@ -7,7 +7,7 @@ package io.github.nucleuspowered.nucleus.api.module.staffchat;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.event.message.MessageChannelEvent;
+import org.spongepowered.api.event.message.AudienceMessageEvent;
 
 import java.util.UUID;
 
@@ -17,13 +17,13 @@ import java.util.UUID;
 public interface NucleusStaffChatService {
 
     /**
-     * Gets if the provided {@link MessageChannelEvent} is going to be
+     * Gets if the provided {@link AudienceMessageEvent} is going to be
      * sent to the staff chat channel.
      *
-     * @param event The {@link MessageChannelEvent}
+     * @param event The {@link AudienceMessageEvent}
      * @return true if so
      */
-    boolean isDirectedToStaffChat(MessageChannelEvent event);
+    boolean isDirectedToStaffChat(AudienceMessageEvent event);
 
     /**
      * Gets if the given {@link Audience} is currently talking

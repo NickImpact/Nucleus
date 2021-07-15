@@ -4,20 +4,21 @@
  */
 package io.github.nucleuspowered.nucleus.core.scaffold.command.control;
 
-import com.google.common.collect.ImmutableList;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandExecutor;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.annotation.Command;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.annotation.EssentialsEquivalent;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class CommandMetadata {
 
     private static void aliases(final String[] v, final boolean isRoot, final boolean addPrefix,
-            final ImmutableList.Builder<String> root,
-            final ImmutableList.Builder<String> sub,
-            final ImmutableList.Builder<String> disabled) {
+            final List<String> root,
+            final List<String> sub,
+            final List<String> disabled) {
         for (final String alias : v) {
             if (alias.startsWith("#")) {
                 root.add(alias.substring(1).toLowerCase());
@@ -68,18 +69,18 @@ public final class CommandMetadata {
         this.annotation = annotation;
         this.executor = executor;
         this.commandKey = commandKey;
-        final ImmutableList.Builder<String> rootBuilder = new ImmutableList.Builder<>();
-        final ImmutableList.Builder<String> subBuilder = new ImmutableList.Builder<>();
-        final ImmutableList.Builder<String> disabledRootBuilder = new ImmutableList.Builder<>();
+        final List<String> rootBuilder = new ArrayList<>();
+        final List<String> subBuilder = new ArrayList<>();
+        final List<String> disabledRootBuilder = new ArrayList<>();
         aliases(annotation.aliases(),
                 annotation.parentCommand() == ICommandExecutor.class,
                 annotation.prefixAliasesWithN(),
                 rootBuilder,
                 subBuilder,
                 disabledRootBuilder);
-        this.root = rootBuilder.build();
-        this.sub = subBuilder.build();
-        this.disabledByDefault = disabledRootBuilder.build();
+        this.root = Collections.unmodifiableList(rootBuilder);
+        this.sub = Collections.unmodifiableList(subBuilder);
+        this.disabledByDefault = Collections.unmodifiableList(disabledRootBuilder);
         this.isRoot = annotation.parentCommand() == ICommandExecutor.class;
         this.essentialsEquivalent = essentialsEquivalent;
         this.modifierKeyRedirect = !annotation.modifierOverride().isEmpty();

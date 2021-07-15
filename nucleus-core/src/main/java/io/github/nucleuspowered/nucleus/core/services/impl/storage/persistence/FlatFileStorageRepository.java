@@ -4,8 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.services.impl.storage.persistence;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -32,6 +30,8 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -183,17 +183,17 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
 
         @Override
         public Collection<K> getAllKeys() throws DataLoadException {
-            return ImmutableSet.copyOf(this.getAllKeysInternal());
+            return Collections.unmodifiableSet(this.getAllKeysInternal());
         }
 
         @Override
         public Map<K, JsonObject> getAll(final Q query) throws DataLoadException, DataQueryException {
-            final ImmutableMap.Builder<K, JsonObject> j = ImmutableMap.builder();
+            final HashMap<K, JsonObject> j = new HashMap<>();
             for (final K key : this.getAllKeys(query)) {
                 j.put(key, this.get(key).get()); // should be there
             }
 
-            return j.build();
+            return Collections.unmodifiableMap(j);
         }
 
         @Override

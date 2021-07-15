@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.info.services;
 
-import com.google.common.collect.ImmutableSet;
 import io.github.nucleuspowered.nucleus.core.io.TextFileController;
 import io.github.nucleuspowered.nucleus.core.scaffold.service.ServiceBase;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
@@ -16,6 +15,7 @@ import org.spongepowered.plugin.PluginContainer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class InfoHandler implements IReloadableService.Reloadable, ServiceBase {
     private final Pattern validFile = Pattern.compile("[a-zA-Z0-9_.\\-]+\\.txt", Pattern.CASE_INSENSITIVE);
 
     public Set<String> getInfoSections() {
-        return ImmutableSet.copyOf(this.infoFiles.keySet());
+        return Collections.unmodifiableSet(this.infoFiles.keySet());
     }
 
     /**

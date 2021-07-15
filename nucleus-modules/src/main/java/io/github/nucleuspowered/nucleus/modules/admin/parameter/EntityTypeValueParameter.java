@@ -5,6 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.admin.parameter;
 
 import net.kyori.adventure.text.Component;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -42,8 +43,10 @@ public class EntityTypeValueParameter implements ValueParameter<Predicate<Entity
     }};
 
     @Override
-    public List<String> complete(final CommandContext context, final String input) {
-        return this.map.keySet().stream().filter(x -> x.startsWith(input)).collect(Collectors.toList());
+    public List<CommandCompletion> complete(final CommandContext context, final String input) {
+        return this.map.keySet().stream().filter(x -> x.startsWith(input))
+                .map(CommandCompletion::of)
+                .collect(Collectors.toList());
     }
 
     @Override

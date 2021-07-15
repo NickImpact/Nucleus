@@ -10,6 +10,7 @@ import io.github.nucleuspowered.nucleus.modules.kit.services.KitService;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IPermissionService;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -37,7 +38,7 @@ public final class KitParameter implements ValueParameter<Kit> {
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String currentInput) {
+    public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
         final boolean showhidden = this.permissionService.hasPermission(context, KitPermissions.KIT_SHOWHIDDEN);
         return this.kitService.getKitNames().stream()
                 .filter(s -> s.toLowerCase().startsWith(currentInput.toLowerCase()))
@@ -45,7 +46,7 @@ public final class KitParameter implements ValueParameter<Kit> {
                 .map(x -> this.kitService.getKit(x).get())
                 .filter(x -> this.checkPermission(context, x))
                 .filter(x -> this.permissionCheck && (showhidden || !x.isHiddenFromList()))
-                .map(x -> x.getName().toLowerCase())
+                .map(x -> CommandCompletion.of(x.getName().toLowerCase()))
                 .collect(Collectors.toList());
     }
 

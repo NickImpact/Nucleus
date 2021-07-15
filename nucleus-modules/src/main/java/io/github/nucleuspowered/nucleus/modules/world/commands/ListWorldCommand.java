@@ -51,7 +51,7 @@ public class ListWorldCommand implements ICommandExecutor {
         //    listContent.add(context.getMessage("command.world.list.dimensionid", String.valueOf(i))));
         final Vector3i spawnPosition = properties.spawnPosition();
         listContent.add(context.getMessage("command.world.list.spawnpoint",
-                String.valueOf(spawnPosition.getX()), String.valueOf(spawnPosition.getY()), String.valueOf(spawnPosition.getZ())));
+                String.valueOf(spawnPosition.x()), String.valueOf(spawnPosition.y()), String.valueOf(spawnPosition.z())));
 
         listContent.add(context.getMessage("command.world.list.uuid", world.uniqueId().toString()));
 

@@ -87,7 +87,7 @@ public class LightningCommand implements ICommandExecutor {
             // Smite above, but not on.
             final ServerLocation lightningLocation =
                     result.map(RayTraceResult::hitPosition)
-                            .map(x -> ServerLocation.of(pl.serverLocation().world(), x.getX(), x.getY(), x.getZ()))
+                            .map(x -> ServerLocation.of(pl.serverLocation().world(), x.x(), x.y(), x.z()))
                             .orElseGet(() -> pl.serverLocation().add(0.0, 3.0, 0.0));
 
             this.spawnLightning(lightningLocation, context, null);

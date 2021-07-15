@@ -108,9 +108,9 @@ public class BlockInfoCommand implements ICommandExecutor {
             Util.getPaginationBuilder(context.audience()).contents(lt)
                     .padding(Component.text("-", NamedTextColor.GREEN))
                     .title(context.getMessage("command.blockinfo.list.header",
-                            pos.getX(),
-                            pos.getY(),
-                            pos.getZ()))
+                            pos.x(),
+                            pos.y(),
+                            pos.z()))
                     .sendTo(context.audience());
 
             return context.successResult();

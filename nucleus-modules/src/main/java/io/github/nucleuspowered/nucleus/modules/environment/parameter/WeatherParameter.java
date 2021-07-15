@@ -5,6 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.environment.parameter;
 
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class WeatherArgument implements ValueParameter<WeatherType> {
+public class WeatherParameter implements ValueParameter<WeatherType> {
 
     private static final Map<String, WeatherType> WEATHERS = new HashMap<>();
 
@@ -36,14 +37,15 @@ public class WeatherArgument implements ValueParameter<WeatherType> {
 
     private final IMessageProviderService messageProvider;
 
-    public WeatherArgument(final IMessageProviderService messageProvider) {
+    public WeatherParameter(final IMessageProviderService messageProvider) {
         this.messageProvider = messageProvider;
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String currentInput) {
-        return WeatherArgument.WEATHERS.keySet().stream()
+    public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
+        return WeatherParameter.WEATHERS.keySet().stream()
                 .filter(weather -> weather.toLowerCase().startsWith(currentInput))
+                .map(CommandCompletion::of)
                 .collect(Collectors.toList());
     }
 
@@ -53,8 +55,8 @@ public class WeatherArgument implements ValueParameter<WeatherType> {
             final ArgumentReader.Mutable reader,
             final CommandContext.Builder context) throws ArgumentParseException {
         final String arg = reader.parseString().toLowerCase();
-        if (WeatherArgument.WEATHERS.containsKey(arg)) {
-            return Optional.of(WeatherArgument.WEATHERS.get(arg));
+        if (WeatherParameter.WEATHERS.containsKey(arg)) {
+            return Optional.of(WeatherParameter.WEATHERS.get(arg));
         }
 
         throw reader.createException(this.messageProvider.getMessageFor(context.cause().audience(), "args.weather.noexist", "clear, rain, storm"));

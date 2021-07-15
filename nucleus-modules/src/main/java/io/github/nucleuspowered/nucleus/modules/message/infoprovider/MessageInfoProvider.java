@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.message.infoprovider;
 
-import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.modules.message.MessageKeys;
 import io.github.nucleuspowered.nucleus.modules.message.MessagePermissions;
 import io.github.nucleuspowered.nucleus.modules.message.services.MessageHandler;
@@ -15,6 +14,7 @@ import net.kyori.adventure.text.Component;
 import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.entity.living.player.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,8 +34,8 @@ public class MessageInfoProvider implements NucleusProvider {
                     .getUnwrapped(user.uniqueId(), MessageKeys.MESSAGE_TOGGLE);
             final IMessageProviderService mp = serviceCollection.messageProvider();
             final String yesOrNo = socialSpy ? "standard.yesno.true" : "standard.yesno.false";
-            final List<Component> lt = Lists.newArrayList(
-                    mp.getMessageFor(source.audience(), "seen.socialspy", mp.getMessageFor(source.audience(), yesOrNo)));
+            final List<Component> lt = new ArrayList<>();
+            lt.add(mp.getMessageFor(source.audience(), "seen.socialspy", mp.getMessageFor(source.audience(), yesOrNo)));
 
             /*this.serviceCollection.moduleConfigProvider()
                     .getModuleConfig(MessageConfig.class)*/

@@ -78,7 +78,7 @@ public class TeleportPositionCommand implements ICommandExecutor {
 
         final Vector3i max = world.blockMax();
         final Vector3i min = world.blockMin();
-        if (!(this.isBetween(xx, max.getX(), min.getX()) && this.isBetween(yy, max.getY(), min.getY()) && this.isBetween(zz, max.getZ(), min.getZ()))) {
+        if (!(this.isBetween(xx, max.x(), min.x()) && this.isBetween(yy, max.y(), min.y()) && this.isBetween(zz, max.z(), min.z()))) {
             return context.errorResult("command.tppos.invalid");
         }
 

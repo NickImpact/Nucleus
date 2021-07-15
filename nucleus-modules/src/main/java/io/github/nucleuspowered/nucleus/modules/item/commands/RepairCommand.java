@@ -19,6 +19,7 @@ import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProvide
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IPermissionService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IReloadableService;
 import net.kyori.adventure.text.Component;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.command.parameter.managed.Flag;
 import org.spongepowered.api.data.DataTransactionResult;
@@ -29,10 +30,14 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.registry.RegistryEntry;
+import org.spongepowered.api.registry.RegistryTypes;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @EssentialsEquivalent({"repair", "fix"})
 @Command(
@@ -55,7 +60,10 @@ public class RepairCommand implements ICommandExecutor, IReloadableService.Reloa
     public void onReload(final INucleusServiceCollection serviceCollection) {
         final RepairConfig config = serviceCollection.configProvider().getModuleConfig(ItemConfig.class).getRepairConfig();
         this.whitelist = config.isWhitelist();
-        this.restrictions = config.getRestrictions();
+        this.restrictions = config.getRestrictions().stream()
+                .map(x -> Sponge.game().registries().registry(RegistryTypes.ITEM_TYPE).findValue(x).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -4,9 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.scaffold.command.control;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import io.github.nucleuspowered.nucleus.api.util.NoExceptionAutoClosable;
 import io.github.nucleuspowered.nucleus.core.Registry;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandContext;
@@ -16,7 +13,6 @@ import io.github.nucleuspowered.nucleus.core.scaffold.command.annotation.Command
 import io.github.nucleuspowered.nucleus.core.scaffold.command.annotation.CommandModifier;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.config.CommandModifiersConfig;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.impl.CommandContextImpl;
-import io.github.nucleuspowered.nucleus.core.scaffold.command.modifier.CommandModifierFactory;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.modifier.ICommandModifier;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IReloadableService;
@@ -94,7 +90,9 @@ public final class CommandControl {
     }
 
     public void attach(final String alias, final CommandControl commandControl) {
-        Preconditions.checkState(this.acceptingRegistration, "Registration is complete.");
+        if (!this.acceptingRegistration) {
+            throw new IllegalStateException("Registration is complete.");
+        }
         this.subcommands.computeIfAbsent(commandControl, x -> new ArrayList<>()).add(alias.toLowerCase());
         this.primarySubcommands.putIfAbsent(
                 commandControl.getCommandKey().substring(commandControl.getCommandKey().lastIndexOf(".") + 1),
@@ -102,7 +100,9 @@ public final class CommandControl {
     }
 
     public void completeRegistration(final INucleusServiceCollection serviceCollection) {
-        Preconditions.checkState(this.acceptingRegistration, "Registration is complete.");
+        if (!this.acceptingRegistration) {
+            throw new IllegalStateException("Registration is complete.");
+        }
         this.acceptingRegistration = false;
         if (this.executor instanceof IReloadableService.Reloadable) {
             final IReloadableService.Reloadable reloadable = (IReloadableService.Reloadable) this.executor;
@@ -232,7 +232,9 @@ public final class CommandControl {
     }
 
     private ICommandResult execute(@NonNull final ICommandContext context) throws CommandException {
-        Preconditions.checkState(this.executor != null, "executor");
+        if (this.executor == null) {
+            throw new IllegalStateException("Executor is missing.");
+        }
         final ICommandResult result;
         // Anything else to go here?
         result = this.executor.execute(context);
@@ -244,7 +246,9 @@ public final class CommandControl {
         if (result.isSuccess()) {
             this.onSuccess(contextSource);
         } else if (!result.isWillContinue()) {
-            this.onFail(contextSource, result.getErrorMessage(contextSource).orElse(null));
+            // This occurs when no exception is thrown, so the error in the command result
+            // will be returned.
+            this.onFail(contextSource, null);
         }
 
         // The command will continue later. Don't do anything.
@@ -377,13 +381,13 @@ public final class CommandControl {
     }
 
     Collection<String> getAliases() {
-        return ImmutableList.copyOf(this.aliases);
+        return this.aliases;
     }
 
     private static Map<CommandModifier, ICommandModifier> validateModifiers(final CommandControl control, final Logger logger,
             final Command command) {
         if (command.modifiers().length == 0) {
-            return ImmutableMap.of();
+            return Collections.emptyMap();
         }
 
         final Map<CommandModifier, ICommandModifier> modifiers = new LinkedHashMap<>();

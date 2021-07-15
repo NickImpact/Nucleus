@@ -4,8 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.scaffold.command.impl;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandContext;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandResult;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.annotation.CommandModifier;
@@ -30,10 +28,10 @@ import org.spongepowered.api.util.Nameable;
 import org.spongepowered.api.util.locale.LocaleSource;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.server.ServerWorld;
-import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -250,7 +248,7 @@ public final class CommandContextImpl implements ICommandContext {
     }
 
     @Override public Map<CommandModifier, ICommandModifier> modifiers() {
-        return ImmutableMap.copyOf(this.modifiers);
+        return Collections.unmodifiableMap(this.modifiers);
     }
 
     @Override public void removeModifier(final String modifierId) {
@@ -263,7 +261,7 @@ public final class CommandContextImpl implements ICommandContext {
     }
 
     @Override public Collection<Consumer<ICommandContext>> failActions() {
-        return ImmutableList.copyOf(this.failActions);
+        return Collections.unmodifiableList(this.failActions);
     }
 
     @Override public void addFailAction(final Consumer<ICommandContext> action) {

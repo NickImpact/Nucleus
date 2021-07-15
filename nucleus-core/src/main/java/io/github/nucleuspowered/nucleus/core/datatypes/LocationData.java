@@ -55,6 +55,6 @@ public class LocationData implements NamedLocation {
 
     public String toLocationString() {
         return MessageFormat.format("name: {0}, world: {1}, x: {2}, y: {3}, z: {4}", this.warpName, this.resourceKey.asString(),
-            (int) this.position.getX(), (int) this.position.getY(), (int) this.position.getZ());
+            (int) this.position.x(), (int) this.position.y(), (int) this.position.z());
     }
 }

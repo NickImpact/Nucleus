@@ -17,7 +17,7 @@ import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.event.message.MessageChannelEvent;
+import org.spongepowered.api.event.message.AudienceMessageEvent;
 
 import java.util.UUID;
 
@@ -41,7 +41,7 @@ public class StaffChatService implements NucleusStaffChatService, ServiceBase {
     }
 
     @Override
-    public boolean isDirectedToStaffChat(final MessageChannelEvent event) {
+    public boolean isDirectedToStaffChat(final AudienceMessageEvent event) {
         final Object root = event.cause().root();
         if (root instanceof Audience) {
             return this.isCurrentlyChattingInStaffChat((Audience) root);

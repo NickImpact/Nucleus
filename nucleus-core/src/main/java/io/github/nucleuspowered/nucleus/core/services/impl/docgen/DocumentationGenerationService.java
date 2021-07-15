@@ -38,6 +38,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -217,8 +218,8 @@ public class DocumentationGenerationService implements IDocumentationGenerationS
             final ConfigurationNode configNode = configurationLoader.createNode();
             for (final Map.Entry<String, Class<?>> entry : configs.entrySet()) {
                 try {
-                    configNode.node(entry.getKey()).set(this.createConfigString(entry.getValue().newInstance()));
-                } catch (final InstantiationException | IllegalAccessException e) {
+                    configNode.node(entry.getKey()).set(this.createConfigString(entry.getValue().getDeclaredConstructor().newInstance()));
+                } catch (final InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }

@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.kit.events;
 
-import com.google.common.collect.ImmutableList;
 import io.github.nucleuspowered.nucleus.api.module.kit.KitRedeemResult;
 import io.github.nucleuspowered.nucleus.api.module.kit.data.Kit;
 import io.github.nucleuspowered.nucleus.api.module.kit.event.NucleusKitEvent;
@@ -16,6 +15,7 @@ import org.spongepowered.api.event.impl.AbstractEvent;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 public abstract class KitEvent extends AbstractEvent implements NucleusKitEvent {
@@ -106,7 +106,7 @@ public abstract class KitEvent extends AbstractEvent implements NucleusKitEvent 
             if (stacksToRedeem == null) {
                 this.toRedeem = null;
             } else {
-                this.toRedeem = ImmutableList.copyOf(stacksToRedeem);
+                this.toRedeem = Collections.unmodifiableCollection(stacksToRedeem);
             }
         }
 
@@ -118,7 +118,7 @@ public abstract class KitEvent extends AbstractEvent implements NucleusKitEvent 
             if (commandsToExecute == null) {
                 this.commandRedeem = null;
             } else {
-                this.commandRedeem = ImmutableList.copyOf(commandsToExecute);
+                this.commandRedeem = Collections.unmodifiableCollection(commandsToExecute);
             }
         }
     }

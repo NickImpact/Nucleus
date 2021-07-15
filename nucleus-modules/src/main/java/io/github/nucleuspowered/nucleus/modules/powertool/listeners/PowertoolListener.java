@@ -51,8 +51,10 @@ public class PowertoolListener implements ListenerBase {
 
     @Listener
     @Include(Cancellable.class)
-    @Exclude(InteractBlockEvent.class)
     public void onUserInteract(final InteractEvent event, @Root final ServerPlayer player) {
+        if (event instanceof InteractBlockEvent) {
+            return;
+        }
         // No item in hand or no permission -> no powertool.
         if (player.itemInHand(HandTypes.MAIN_HAND).isEmpty() ||
                 !this.permissionService.hasPermission(player, PowertoolPermissions.BASE_POWERTOOL)) {

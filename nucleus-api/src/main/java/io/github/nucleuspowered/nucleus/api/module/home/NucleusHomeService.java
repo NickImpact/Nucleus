@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.api.module.home;
 
-import io.github.nucleuspowered.nucleus.api.core.exception.NoSuchPlayerException;
 import io.github.nucleuspowered.nucleus.api.module.home.data.Home;
 import io.github.nucleuspowered.nucleus.api.module.home.exception.HomeException;
 import org.spongepowered.api.entity.living.player.User;
@@ -88,9 +87,8 @@ public interface NucleusHomeService {
      * @throws HomeException if the home could not be created as the name is incorrect,
      *                       could not be created due to home limits, or if a plugin
      *                       cancelled the creation event.
-     * @throws NoSuchPlayerException if the {@link UUID} does not map onto a player.
      */
-    void createHome(final UUID user, final String name, final ServerLocation location, final Vector3d rotation) throws HomeException, NoSuchPlayerException;
+    void createHome(final UUID user, final String name, final ServerLocation location, final Vector3d rotation) throws HomeException;
 
     /**
      * Modifies a home's location.
@@ -122,9 +120,8 @@ public interface NucleusHomeService {
      * @param location The location of the home.
      * @param rotation The rotation of the player when they return to this home.
      * @throws HomeException if the home could not be created, due to home limits, or a plugin cancelled the event.
-     * @throws NoSuchPlayerException if no such player was found
      */
-    default void modifyOrCreateHome(final UUID user, final String name, final ServerLocation location, final Vector3d rotation) throws HomeException, NoSuchPlayerException {
+    default void modifyOrCreateHome(final UUID user, final String name, final ServerLocation location, final Vector3d rotation) throws HomeException {
         if (this.getHome(user, name).isPresent()) {
             this.modifyHome(user, name, location, rotation);
         } else {

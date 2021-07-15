@@ -4,9 +4,8 @@
  */
 package io.github.nucleuspowered.nucleus.core.services.impl.texttemplatefactory;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import io.github.nucleuspowered.nucleus.core.NucleusJavaProperties;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.github.nucleuspowered.nucleus.core.services.impl.textstyle.TextStyleService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
@@ -67,12 +66,15 @@ public final class TemplateParser implements INucleusTextTemplateFactory {
     }
 
     @Override
-    public NucleusTextTemplateImpl createFromAmpersandString(final String string) {
+    public NucleusTextTemplateImpl createFromAmpersandString(final @Nullable String string) {
         return this.createFromAmpersandString(string, null, null);
     }
 
     @Override
-    public NucleusTextTemplateImpl createFromAmpersandString(final String string, final Component prefix, final Component suffix) {
+    public NucleusTextTemplateImpl createFromAmpersandString(final @Nullable String string, final Component prefix, final Component suffix) {
+        if (string == null || string.isEmpty()) {
+            return NucleusTextTemplateImpl.empty();
+        }
         final Matcher mat = pattern.matcher(string);
         final List<String> map = new ArrayList<>();
 
@@ -135,6 +137,9 @@ public final class TemplateParser implements INucleusTextTemplateFactory {
             return Optional.of(this.createFromAmpersandString(string));
         } catch (final Exception e) {
             this.serviceCollection.logger().warn("Could not parse \"{}\", ignoring.", string);
+            if (NucleusJavaProperties.DEBUG_MODE) {
+                e.printStackTrace();
+            }
             return Optional.empty();
         }
     }

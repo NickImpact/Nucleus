@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.logging;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IReloadableService;
@@ -73,7 +72,7 @@ public abstract class AbstractLoggingHandler implements IReloadableService.Reloa
 
         final List<String> l;
         synchronized (this.locking) {
-            l = Lists.newArrayList(this.queueEntry);
+            l = new ArrayList<>(this.queueEntry);
             this.queueEntry.clear();
         }
 

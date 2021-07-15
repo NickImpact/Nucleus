@@ -5,9 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.afk.services;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.api.module.afk.NucleusAFKService;
 import io.github.nucleuspowered.nucleus.api.text.NucleusTextTemplate;
@@ -44,12 +42,14 @@ import org.spongepowered.api.util.Nameable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -57,12 +57,12 @@ import java.util.stream.Stream;
 @APIService(NucleusAFKService.class)
 public class AFKHandler implements NucleusAFKService, IReloadableService.Reloadable, ServiceBase {
 
-    private final Map<UUID, AFKData> data = Maps.newConcurrentMap();
+    private final Map<UUID, AFKData> data = new ConcurrentHashMap<>();
     private final INucleusServiceCollection serviceCollection;
     private AFKConfig config = new AFKConfig();
 
     @GuardedBy("lock")
-    private final Set<UUID> activity = Sets.newHashSet();
+    private final Set<UUID> activity = new HashSet<>();
 
     @GuardedBy("lock2")
     private final Multimap<UUID, UUID> disabledTracking = HashMultimap.create();

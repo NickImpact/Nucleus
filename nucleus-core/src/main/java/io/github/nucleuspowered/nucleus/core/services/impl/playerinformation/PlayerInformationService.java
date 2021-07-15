@@ -4,14 +4,13 @@
  */
 package io.github.nucleuspowered.nucleus.core.services.impl.playerinformation;
 
-import com.google.common.collect.ImmutableList;
+import com.google.inject.Singleton;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IPlayerInformationService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-
-import com.google.inject.Singleton;
 
 @Singleton
 public class PlayerInformationService implements IPlayerInformationService {
@@ -24,6 +23,6 @@ public class PlayerInformationService implements IPlayerInformationService {
     }
 
     @Override public Collection<Provider> getProviders() {
-        return ImmutableList.copyOf(this.providers);
+        return Collections.unmodifiableList(this.providers);
     }
 }

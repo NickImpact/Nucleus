@@ -66,8 +66,8 @@ public class KernelHelperTest {
         final Vector3i centre = new Vector3i(this.xc, 0, this.zc);
         final KernelHelperTestingClass testingClass = new KernelHelperTestingClass(this.x, this.z, this.signx, this.signz);
         final Vector3d result = testingClass.getLocationWithOffset(centre, DUMMY);
-        Assert.assertEquals("x is incorrect", this.expectedx, result.getFloorX());
-        Assert.assertEquals("z is incorrect", this.expectedz, result.getFloorZ());
+        Assert.assertEquals("x is incorrect", this.expectedx, result.floorX());
+        Assert.assertEquals("z is incorrect", this.expectedz, result.floorZ());
     }
 
     static class TestOptions implements NucleusRTPService.RTPOptions {

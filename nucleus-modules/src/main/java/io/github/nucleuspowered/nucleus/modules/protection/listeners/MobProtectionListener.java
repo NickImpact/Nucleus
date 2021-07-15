@@ -17,8 +17,11 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
+import org.spongepowered.api.registry.RegistryTypes;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MobProtectionListener implements IReloadableService.Reloadable, ListenerBase.Conditional {
 
@@ -38,7 +41,12 @@ public class MobProtectionListener implements IReloadableService.Reloadable, Lis
 
     @Override
     public void onReload(final INucleusServiceCollection serviceCollection) {
-        this.whitelistedTypes = serviceCollection.configProvider().getModuleConfig(ProtectionConfig.class).getWhitelistedEntities();
+        this.whitelistedTypes = serviceCollection.configProvider().getModuleConfig(ProtectionConfig.class)
+                .getWhitelistedEntities()
+                .stream()
+                .map(x -> RegistryTypes.ENTITY_TYPE.get().findValue(x).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override

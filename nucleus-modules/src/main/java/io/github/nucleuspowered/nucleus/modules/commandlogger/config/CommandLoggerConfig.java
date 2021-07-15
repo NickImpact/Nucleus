@@ -4,12 +4,12 @@
  */
 package io.github.nucleuspowered.nucleus.modules.commandlogger.config;
 
-import com.google.common.collect.ImmutableList;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.annotation.configuratehelper.LocalisedComment;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @ConfigSerializable
@@ -44,7 +44,7 @@ public class CommandLoggerConfig {
     }
 
     public List<String> getCommandsToFilter() {
-        return ImmutableList.copyOf(this.commandsToFilter);
+        return Collections.unmodifiableList(this.commandsToFilter);
     }
 
     public boolean isLogToFile() {

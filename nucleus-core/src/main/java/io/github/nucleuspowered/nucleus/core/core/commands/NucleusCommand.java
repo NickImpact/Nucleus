@@ -51,19 +51,12 @@ public class NucleusCommand implements ICommandExecutor {
     public ICommandResult execute(final ICommandContext context) throws CommandException {
         if (this.modules == null) {
             final TextComponent.Builder tb = Component.text().content("Modules: ").color(NamedTextColor.GREEN);
-
-            boolean addComma = false;
             final Collection<String> modules = this.reporter.discoveredModules().stream().sorted().collect(Collectors.toList());
             final Collection<String> enabled = this.reporter.enabledModules().stream().map(ModuleContainer::getId).collect(Collectors.toList());
-            for (final String module : modules) {
-                if (addComma) {
-                    tb.append(Component.text(", ", NamedTextColor.GREEN));
-                }
-
-                tb.append(Component.text(module, enabled.contains(module) ? NamedTextColor.GREEN : NamedTextColor.RED));
-                addComma = true;
-            }
-
+            final Collection<Component> toJoin = modules.stream()
+                    .map(x -> Component.text(x, enabled.contains(x) ? NamedTextColor.GREEN : NamedTextColor.RED))
+                    .collect(Collectors.toList());
+            tb.append(Component.join(Component.text(", ", NamedTextColor.GREEN), toJoin));
             this.modules = tb.append(Component.text(".", NamedTextColor.GREEN)).build();
         }
 

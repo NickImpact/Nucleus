@@ -5,6 +5,7 @@
 package io.github.nucleuspowered.nucleus.core.scaffold.command.parameter;
 
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -29,7 +30,7 @@ public final class RegexParameter implements ValueParameter<String> {
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String currentInput) {
+    public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
         return Collections.emptyList();
     }
 

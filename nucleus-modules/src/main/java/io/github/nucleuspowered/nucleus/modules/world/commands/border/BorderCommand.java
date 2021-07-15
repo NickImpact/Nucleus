@@ -5,21 +5,21 @@
 package io.github.nucleuspowered.nucleus.modules.world.commands.border;
 
 import io.github.nucleuspowered.nucleus.core.Util;
-import io.github.nucleuspowered.nucleus.modules.world.WorldPermissions;
-import io.github.nucleuspowered.nucleus.modules.world.commands.WorldCommand;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandContext;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandExecutor;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandResult;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.NucleusParameters;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.annotation.Command;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
+import io.github.nucleuspowered.nucleus.modules.world.WorldPermissions;
+import io.github.nucleuspowered.nucleus.modules.world.commands.WorldCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.world.WorldBorder;
+import org.spongepowered.api.world.border.WorldBorder;
 import org.spongepowered.api.world.server.ServerWorld;
-import org.spongepowered.api.world.storage.WorldProperties;
+import org.spongepowered.math.vector.Vector2d;
 import org.spongepowered.math.vector.Vector3d;
 
 import java.util.ArrayList;
@@ -46,17 +46,17 @@ public class BorderCommand implements ICommandExecutor {
         final List<Component> worldBorderInfo = new ArrayList<>();
 
         final WorldBorder worldBorder = wp.properties().worldBorder();
-        final Vector3d centre = worldBorder.center();
+        final Vector2d centre = worldBorder.center();
         final int currentDiameter = (int) worldBorder.diameter();
-        final int targetDiameter = (int) worldBorder.newDiameter();
+        final int targetDiameter = (int) worldBorder.targetDiameter();
 
         // Border centre
-        worldBorderInfo.add(context.getMessage("command.world.border.centre", String.valueOf(centre.getFloorX()), String.valueOf(centre.getFloorZ())));
+        worldBorderInfo.add(context.getMessage("command.world.border.centre", String.valueOf(centre.floorX()), String.valueOf(centre.floorY())));
         worldBorderInfo.add(context.getMessage("command.world.border.currentdiameter", currentDiameter));
 
         if (currentDiameter != targetDiameter) {
             worldBorderInfo.add(context.getMessage("command.world.border.targetdiameter", targetDiameter,
-                    String.valueOf(worldBorder.timeRemaining().getSeconds())));
+                    String.valueOf(worldBorder.timeUntilTargetDiameter().getSeconds())));
         }
 
         Util.getPaginationBuilder(context.audience())

@@ -60,7 +60,9 @@ public class ItemInfoCommand implements ICommandExecutor {
         };
     }
 
-    @Override public ICommandResult execute(final ICommandContext context) throws CommandException {
+    @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public ICommandResult execute(final ICommandContext context) throws CommandException {
         final Optional<ItemStackSnapshot> catalogTypeOptional = context.getOne(this.itemTypeParameter);
         final ItemStackSnapshot is;
         if (catalogTypeOptional.isPresent()) {

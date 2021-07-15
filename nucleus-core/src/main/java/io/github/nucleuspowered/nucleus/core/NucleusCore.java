@@ -39,7 +39,7 @@ import io.github.nucleuspowered.nucleus.core.services.interfaces.ICommandMetadat
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IConfigProvider;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IReloadableService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IStorageManager;
-import io.github.nucleuspowered.nucleus.core.startuperror.ConfigErrorHandler;
+import io.github.nucleuspowered.nucleus.core.startuperror.NucleusConfigException;
 import io.github.nucleuspowered.nucleus.core.startuperror.NucleusErrorHandler;
 import io.github.nucleuspowered.nucleus.core.util.functional.Action;
 import io.leangen.geantyref.TypeToken;
@@ -54,7 +54,6 @@ import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.event.EventContext;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.lifecycle.LoadedGameEvent;
 import org.spongepowered.api.event.lifecycle.RefreshGameEvent;
 import org.spongepowered.api.event.lifecycle.RegisterCommandEvent;
 import org.spongepowered.api.event.lifecycle.RegisterFactoryEvent;
@@ -64,7 +63,6 @@ import org.spongepowered.api.event.lifecycle.StartedEngineEvent;
 import org.spongepowered.api.event.lifecycle.StartingEngineEvent;
 import org.spongepowered.api.event.lifecycle.StoppingEngineEvent;
 import org.spongepowered.api.placeholder.PlaceholderParser;
-import org.spongepowered.api.registry.DefaultedRegistryType;
 import org.spongepowered.api.registry.RegistryTypes;
 import org.spongepowered.api.scheduler.ScheduledTask;
 import org.spongepowered.api.scheduler.Task;
@@ -95,14 +93,12 @@ import java.util.stream.Collectors;
 
 public final class NucleusCore {
 
-    public static final String DOCGEN_PROPERTY = "nucleus.docgen";
-
     private final PluginContainer pluginContainer;
     private final Path configDirectory;
     private final Logger logger;
     private final Injector injector;
     private final IModuleProvider provider;
-    private final boolean runDocGen = System.getProperty(DOCGEN_PROPERTY) != null;
+    private final boolean runDocGen = NucleusJavaProperties.RUN_DOCGEN;
     private final List<Action> onStartedActions = new LinkedList<>();
     private final IPluginInfo pluginInfo;
 
@@ -135,22 +131,31 @@ public final class NucleusCore {
     /**
      * Begin setup, read module config, load modules that are important.
      */
-    public void init() {
+    public void init() throws NucleusConfigException {
         final Collection<Tuple<ModuleContainer, IModule>> tuple = this.startModuleLoading();
         this.serviceCollection.configurateHelper().complete();
         final IConfigProvider provider = this.serviceCollection.configProvider();
         try {
             provider.prepareCoreConfig(this.coreConfigurationTransformations());
         } catch (final ConfigurateException e) {
-            new ConfigErrorHandler(this.pluginContainer, e, this.runDocGen, this.logger, provider.getCoreConfigFileName(), this.pluginInfo);
+            throw new NucleusConfigException(
+                    "Could not load Nucleus core config. Aborting initialisation.",
+                    provider.getCoreConfigFileName(),
+                    this.runDocGen,
+                    e
+            );
         }
         try {
             provider.prepareModuleConfig();
         } catch (final ConfigurateException e) {
-            new ConfigErrorHandler(this.pluginContainer, e, this.runDocGen, this.logger, provider.getModuleConfigFileName(), this.pluginInfo);
+            throw new NucleusConfigException(
+                    "Could not load Nucleus module config. Aborting initialisation.",
+                    provider.getModuleConfigFileName(),
+                    this.runDocGen,
+                    e
+            );
         }
         this.completeModuleInit(tuple);
-        this.serviceCollection.userPreferenceService().postInit();
     }
 
     public INucleusServiceCollection getServiceCollection() {
@@ -218,8 +223,11 @@ public final class NucleusCore {
 
         final RegisterRegistryValueEvent.RegistryStep<PlaceholderParser> placeholderParserRegistryStep =
                 event.registry(RegistryTypes.PLACEHOLDER_PARSER);
-        this.serviceCollection.placeholderService().getNucleusParsers().forEach((key, value) ->
-                placeholderParserRegistryStep.register(ResourceKey.of(this.pluginContainer, key), value.getParser()));
+        this.serviceCollection.placeholderService().getNucleusParsers().forEach((key, value) -> {
+            if (!value.isDuplicate()) {
+                placeholderParserRegistryStep.register(ResourceKey.of(this.pluginContainer, key), value.getParser());
+            }
+        });
         this.serviceCollection.logger().info("Registered placeholder parsers.");
 
         final NucleusRegisterPreferenceKeyEvent registerPreferenceKeyEvent = new RegisterPreferenceKeyEvent(
@@ -228,11 +236,6 @@ public final class NucleusCore {
         );
         Sponge.eventManager().post(registerPreferenceKeyEvent);
         this.serviceCollection.logger().info("Registered user preference keys.");
-    }
-
-    @Listener
-    public void onGameLoadComplete(final LoadedGameEvent event) {
-        this.serviceCollection.userPreferenceService().postInit();
     }
 
     @Listener
@@ -276,10 +279,10 @@ public final class NucleusCore {
 
     @Listener
     public void serverStarted(final StartedEngineEvent<Server> event) {
-        if (this.runDocGen) {
+        if (NucleusJavaProperties.DOCGEN_PATH != null) {
             final Path finalPath;
             try {
-                final String docgenPath = System.getProperty(DOCGEN_PROPERTY);
+                final String docgenPath = NucleusJavaProperties.DOCGEN_PATH;
                 if (docgenPath.isEmpty()) {
                     finalPath = this.getDataDirectory();
                 } else {
@@ -316,7 +319,7 @@ public final class NucleusCore {
         // Teardown data here
         final IStorageManager manager = this.serviceCollection.storageManager();
         manager.saveAndInvalidateAllCaches().whenComplete((v, t) -> manager.detachAll());
-        Sponge.asyncScheduler().tasksByPlugin(this.pluginContainer).forEach(ScheduledTask::cancel);
+        Sponge.asyncScheduler().tasks(this.pluginContainer).forEach(ScheduledTask::cancel);
     }
 
     @Listener
@@ -468,9 +471,9 @@ public final class NucleusCore {
         for (final ModuleContainer moduleContainer : moduleContainers) {
             if (event.shouldLoad(moduleContainer.getId())) {
                 containersToReturn.add(moduleContainer);
-                this.serviceCollection.moduleReporter().provideEnabledModule(moduleContainer);
             }
         }
+        containersToReturn.forEach(this.serviceCollection.moduleReporter()::provideEnabledModule);
         return containersToReturn;
     }
 

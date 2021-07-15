@@ -4,10 +4,9 @@
  */
 package io.github.nucleuspowered.storage.queryobjects;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,12 +33,12 @@ public class QueryKey<T, Q extends IQueryObject<?, Q>> {
 
     @SuppressWarnings("unchecked")
     public final Collection<T> getValues(final Collection<Object> objects) {
-        final ImmutableList.Builder<T> builder = ImmutableList.builder();
+        final ArrayList<T> builder = new ArrayList<>();
         for (final Object o : objects) {
             builder.add((T) o);
         }
 
-        return builder.build();
+        return Collections.unmodifiableList(builder);
     }
 
 }

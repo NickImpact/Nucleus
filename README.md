@@ -1,7 +1,8 @@
-Nucleus v2
+Nucleus v3
 ====
 
-For version 1, see the sponge-api/7 branch.
+For version 1, the legacy version for Sponge API 7.1 (Minecraft 1.12), see the tag "S7.1-v1-FINAL".\
+For version 2, the current version for Sponge API 7.3 (Minecraft 1.12), see the branch "v2/S7".
 
 * [Source]
 * [Issues]
@@ -10,14 +11,14 @@ For version 1, see the sponge-api/7 branch.
 * [Documentation]
 * [Discord]
 
-Licence: [MIT](LICENSE.md) (except for the Nucleus logo, which is all rights reserved)
+Licence: [MIT](LICENSE.md) (except for the Nucleus logo, which is all rights reserved, and any third party shaded code)
 
 Nucleus is a Sponge plugin that forms a solid base for your server, providing essential commands, events, and other
 tidbits that you might need. Extremely configurable, only loading up the commands and modules you want (and providing a way for
 plugins to disable modules that they replace the functionality of), and providing a simple and rich API, Nucleus is an
 elite plugin for providing simple server tasks, and an essential addition to your server!
 
-Nucleus is being actively developed for Sponge API 7. 
+Nucleus is being actively developed for Sponge API 8. 
 
 ## Contributions
 
@@ -29,6 +30,8 @@ be grateful for your contributions - we're an open community that appreciates an
 * Open an issue if you have a bug to report, or a pull request with your changes.
 
 ## Getting and Building Nucleus
+
+Nucleus currently uses Gradle 7.0.0 and is compiled using JDK 11 (but to a Java 8 target). 
 
 To get a copy of the Nucleus source, ensure you have Git installed, and run the following commands from a command prompt
 or terminal:
@@ -49,7 +52,7 @@ javadocs jar will also exist.
 
 Nucleus is available via a Maven repository.
 
-* Repo: `http://repo.drnaylor.co.uk/artifactory/list/minecraft`
+* Repo: `https://repo.drnaylor.co.uk/artifactory/list/minecraft`
 * Group ID: `io.github.nucleuspowered`
 * Artifact Name: `nucleus-api`
 
@@ -63,7 +66,7 @@ You can also use [JitPack](https://jitpack.io/#NucleusPowered/Nucleus) as a repo
 
 The compiled Nucleus plugin includes the following libraries (with their licences in parentheses):
 
-* QuickStart Module Loader (MIT)
+* Vavr 0.10.3 (Apache 2.0)
 
 See [THIRDPARTY.md](THIRDPARTY.md) for more details.
 

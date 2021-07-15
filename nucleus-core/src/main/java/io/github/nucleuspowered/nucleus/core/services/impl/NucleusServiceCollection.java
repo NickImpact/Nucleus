@@ -35,6 +35,7 @@ import io.github.nucleuspowered.nucleus.core.services.interfaces.ISchedulerServi
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IStorageManager;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.ITextFileControllerCollection;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.ITextStyleService;
+import io.github.nucleuspowered.nucleus.core.services.interfaces.ITimingsService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IUserCacheService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IUserPreferenceService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IWarmupService;
@@ -84,6 +85,7 @@ public class NucleusServiceCollection implements INucleusServiceCollection {
     private final Supplier<ITextStyleService> textStyleServiceProvider;
     private final Supplier<IModuleReporter> moduleReporterSupplier;
     private final Supplier<ISchedulerService> schedulerServiceProvider;
+    private final Supplier<ITimingsService> timingsServiceProvider;
     private final Injector injector;
     private final PluginContainer pluginContainer;
     private final Logger logger;
@@ -124,6 +126,7 @@ public class NucleusServiceCollection implements INucleusServiceCollection {
         this.documentationGenerationServiceProvider = new LazyLoad<>(this, injector, IDocumentationGenerationService.class);
         this.moduleReporterSupplier = new LazyLoad<>(this, injector, IModuleReporter.class);
         this.schedulerServiceProvider = new LazyLoad<>(this, injector, ISchedulerService.class);
+        this.timingsServiceProvider = new LazyLoad<>(this, injector, ITimingsService.class);
         this.injector = injector;
         this.pluginContainer = pluginContainer;
         this.logger = logger;
@@ -224,6 +227,10 @@ public class NucleusServiceCollection implements INucleusServiceCollection {
 
     @Override public ISchedulerService schedulerService() {
         return this.schedulerServiceProvider.get();
+    }
+
+    @Override public ITimingsService timingsService() {
+        return this.timingsServiceProvider.get();
     }
 
     @Override public IUserCacheService userCacheService() {

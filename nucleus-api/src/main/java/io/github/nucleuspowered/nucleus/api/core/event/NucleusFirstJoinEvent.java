@@ -6,7 +6,7 @@ package io.github.nucleuspowered.nucleus.api.core.event;
 
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.message.MessageChannelEvent;
+import org.spongepowered.api.event.message.AudienceMessageEvent;
 import org.spongepowered.api.event.network.ServerSideConnectionEvent;
 
 /**
@@ -18,7 +18,7 @@ import org.spongepowered.api.event.network.ServerSideConnectionEvent;
  *     the original event.
  * </p>
  */
-public interface NucleusFirstJoinEvent extends MessageChannelEvent {
+public interface NucleusFirstJoinEvent extends AudienceMessageEvent {
 
     ServerPlayer getPlayer();
 

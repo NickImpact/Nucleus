@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.playerinfo.commands;
 
-import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.core.Util;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.module.afk.NucleusAFKService;
@@ -203,7 +202,17 @@ public class ListPlayerCommand implements ICommandExecutor, IReloadableService.R
 
         if (this.listConfig.isCompact() && !playerList.isEmpty()) {
             final List<Component> toReturn = new ArrayList<>();
-            final List<List<Component>> parts = Lists.partition(playerList, this.listConfig.getMaxPlayersPerLine());
+            final List<List<Component>> parts = new ArrayList<>();
+            final int maxSize = this.listConfig.getMaxPlayersPerLine();
+            List<Component> l = null;
+            for (final Component part : playerList) {
+                if (l == null || l.size() == maxSize) {
+                    l = new ArrayList<>();
+                    parts.add(l);
+                }
+                l.add(part);
+            }
+            //Lists.partition(playerList, this.listConfig.getMaxPlayersPerLine());
             for (final List<Component> p : parts) {
                 final TextComponent.Builder tb = Component.text();
                 boolean isFirst = true;

@@ -26,6 +26,7 @@ import org.spongepowered.api.registry.DefaultedRegistryReference;
 import org.spongepowered.api.registry.RegistryTypes;
 import org.spongepowered.api.world.WorldType;
 import org.spongepowered.api.world.WorldTypes;
+import org.spongepowered.api.world.border.WorldBorder;
 import org.spongepowered.api.world.difficulty.Difficulty;
 import org.spongepowered.api.world.generation.config.WorldGenerationConfig;
 import org.spongepowered.api.world.server.ServerWorld;
@@ -162,7 +163,9 @@ public class CreateWorldCommand implements ICommandExecutor, IReloadableService.
 
                 if (world != null) {
                     if (this.worldBorderDefault != null && this.worldBorderDefault > 0) {
-                        world.border().setDiameter(this.worldBorderDefault);
+                        final WorldBorder.Builder builder = world.border().toBuilder();
+                        builder.initialDiameter(this.worldBorderDefault).targetDiameter(this.worldBorderDefault);
+                        world.setBorder(builder.build());
                     }
                     context.getServiceCollection().schedulerService().runOnMainThread(
                             () -> context.sendMessage("command.world.create.success", nameInput));

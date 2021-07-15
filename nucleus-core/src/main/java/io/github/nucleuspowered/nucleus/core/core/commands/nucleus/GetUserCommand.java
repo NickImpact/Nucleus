@@ -11,7 +11,6 @@ import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandExecutor;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandResult;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.annotation.Command;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.parameter.RegexParameter;
-import io.github.nucleuspowered.nucleus.core.scaffold.command.parameter.UUIDParameter;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.github.nucleuspowered.nucleus.core.util.TypeTokens;
 import org.spongepowered.api.Sponge;
@@ -19,7 +18,6 @@ import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.profile.GameProfileManager;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
@@ -38,12 +36,12 @@ public class GetUserCommand implements ICommandExecutor {
     @Override public Parameter[] parameters(final INucleusServiceCollection serviceCollection) {
         return new Parameter[] {
                 Parameter.firstOf(
-                        Parameter.builder(UUID.class)
-                                .addParser(new UUIDParameter<>(Optional::ofNullable, serviceCollection.messageProvider())).key(this.uuidKey).build(),
+                        Parameter.uuid().key(this.uuidKey).build(),
                         Parameter.builder(String.class)
                                 .key(this.playerKey)
                                 .addParser(new RegexParameter(Pattern.compile("^[.]{1,16}$"), "command.nucleus.getuser.regex",
-                                serviceCollection.messageProvider())).build()
+                                serviceCollection.messageProvider()))
+                                .build()
             )
         };
     }

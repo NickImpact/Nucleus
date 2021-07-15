@@ -16,6 +16,7 @@ import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
@@ -109,13 +110,14 @@ public class SetCategoryCommand implements ICommandExecutor {
             this.service = service;
         }
 
-        @Override public List<String> complete(final CommandContext context, final String currentInput) {
+        @Override public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
             return this.service.getWarpsWithCategories()
                     .keySet()
                     .stream()
                     .filter(Objects::nonNull)
                     .map(WarpCategory::getId)
                     .filter(x -> x.startsWith(currentInput))
+                    .map(CommandCompletion::of)
                     .collect(Collectors.toList());
         }
 

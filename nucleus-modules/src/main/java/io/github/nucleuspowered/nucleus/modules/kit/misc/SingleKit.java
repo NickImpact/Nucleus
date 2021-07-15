@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.kit.misc;
 
-import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.core.Util;
 import io.github.nucleuspowered.nucleus.api.module.kit.data.Kit;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -18,6 +17,7 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -77,7 +77,7 @@ public class SingleKit implements Kit {
 
     @Override
     public List<ItemStackSnapshot> getStacks() {
-        return Lists.newArrayList(this.stacks);
+        return new ArrayList<>(this.stacks);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class SingleKit implements Kit {
 
     @Override
     public List<String> getCommands() {
-        return Lists.newArrayList(this.commands);
+        return new ArrayList<>(this.commands);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class SingleKit implements Kit {
 
     @Override
     public Kit updateKitInventory(final Inventory inventory) {
-        final List<Inventory> slots = Lists.newArrayList(inventory.slots());
+        final List<Inventory> slots = new ArrayList<>(inventory.slots());
         final List<ItemStackSnapshot> stacks = slots.stream()
                 .filter(x -> !x.peek().isEmpty())
                 .map(x -> x.peek().createSnapshot()).collect(Collectors.toList());

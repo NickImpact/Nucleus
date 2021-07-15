@@ -104,7 +104,7 @@ public class KittyCannonCommand implements ICommandExecutor {
             final boolean causeFire) {
         // Fire it in the direction that the subject is facing with a speed of 0.5 to 3.5, plus the subject's current velocity.
         final Vector3d headRotation = spawnAt.headDirection();
-        final Quaterniond rot = Quaterniond.fromAxesAnglesDeg(headRotation.getX(), -headRotation.getY(), headRotation.getZ());
+        final Quaterniond rot = Quaterniond.fromAxesAnglesDeg(headRotation.x(), -headRotation.y(), headRotation.z());
         final Vector3d velocity = spawnAt.get(Keys.VELOCITY).orElse(Vector3d.ZERO).add(rot.rotate(Vector3d.UNIT_Z).mul(5 * this.random.nextDouble() + 1));
         final ServerWorld world = spawnAt.world();
         final List<CatType> catTypes = RegistryTypes.CAT_TYPE.get().stream().collect(Collectors.toList());

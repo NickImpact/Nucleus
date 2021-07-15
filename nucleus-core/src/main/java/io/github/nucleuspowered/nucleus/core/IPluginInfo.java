@@ -12,6 +12,8 @@ public interface IPluginInfo {
 
     String version();
 
+    String[] validVersions();
+
     String description();
 
     String url();

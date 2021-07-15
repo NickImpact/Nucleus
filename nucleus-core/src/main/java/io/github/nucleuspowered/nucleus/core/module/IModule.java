@@ -16,6 +16,7 @@ import org.checkerframework.framework.qual.DefaultQualifier;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 import org.spongepowered.configurate.transformation.ConfigurationTransformation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -61,8 +62,8 @@ public interface IModule {
 
         default T createInstance() {
             try {
-                return this.getConfigClass().newInstance();
-            } catch (final InstantiationException | IllegalAccessException e) {
+                return this.getConfigClass().getDeclaredConstructor().newInstance();
+            } catch (final InstantiationException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e.getMessage(), e);
             }
         }

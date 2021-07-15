@@ -58,24 +58,24 @@ public class GetPosCommand implements ICommandExecutor {
             context.sendMessage(
                             "command.getpos.location.self",
                             location.worldKey().formatted(),
-                            String.valueOf(blockPos.getX()),
-                            String.valueOf(blockPos.getY()),
-                            String.valueOf(blockPos.getZ())
+                            String.valueOf(blockPos.x()),
+                            String.valueOf(blockPos.y()),
+                            String.valueOf(blockPos.z())
             );
         } else {
             context.sendMessageText(context.getMessage(
                             "command.getpos.location.other",
                             context.getDisplayName(user.uniqueId()),
                             location.worldKey().formatted(),
-                            String.valueOf(blockPos.getX()),
-                            String.valueOf(blockPos.getY()),
-                            String.valueOf(blockPos.getZ())
+                            String.valueOf(blockPos.x()),
+                            String.valueOf(blockPos.y()),
+                            String.valueOf(blockPos.z())
                     ).clickEvent(ClickEvent.runCommand(String.join(" ",
                         "/nucleus:tppos",
                             location.worldKey().asString(),
-                            String.valueOf(blockPos.getX()),
-                            String.valueOf(blockPos.getY()),
-                            String.valueOf(blockPos.getZ()))))
+                            String.valueOf(blockPos.x()),
+                            String.valueOf(blockPos.y()),
+                            String.valueOf(blockPos.z()))))
                     .hoverEvent(HoverEvent.showText(
                             context.getMessage("command.getpos.hover"))));
         }

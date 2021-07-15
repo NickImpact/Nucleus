@@ -15,6 +15,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -137,5 +138,5 @@ public interface IMessageProviderService {
 
     String getTimeString(Locale locale, long time);
 
-    List<String> getAllLocaleNames();
+    Collection<String> getAllLocaleNames();
 }

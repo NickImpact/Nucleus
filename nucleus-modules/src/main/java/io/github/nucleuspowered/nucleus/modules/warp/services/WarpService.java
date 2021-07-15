@@ -4,9 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.warp.services;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.github.nucleuspowered.nucleus.api.module.warp.NucleusWarpService;
@@ -27,6 +24,8 @@ import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.world.server.ServerLocation;
 import org.spongepowered.math.vector.Vector3d;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,11 +108,11 @@ public class WarpService implements NucleusWarpService, ServiceBase {
                         .getOrNewOnThread();
 
         dataObject.get(WarpKeys.WARP_NODES)
-                .orElseGet(ImmutableMap::of)
+                .orElseGet(Collections::emptyMap)
                 .forEach((key, value) -> this.warpCache.put(key.toLowerCase(), value));
 
                 this.warpCategoryCache.putAll(dataObject.get(WarpKeys.WARP_CATEGORIES)
-                                .orElseGet(ImmutableMap::of));
+                                .orElseGet(Collections::emptyMap));
     }
 
     private void saveFromCache() {
@@ -182,7 +181,7 @@ public class WarpService implements NucleusWarpService, ServiceBase {
 
     @Override
     public List<Warp> getAllWarps() {
-        return ImmutableList.copyOf(this.getWarpCache().values());
+        return Collections.unmodifiableList(new ArrayList<>(this.getWarpCache().values()));
     }
 
     @Override
@@ -194,16 +193,16 @@ public class WarpService implements NucleusWarpService, ServiceBase {
                     .collect(Collectors.toList());
         }
 
-        return ImmutableList.copyOf(this.uncategorised);
+        return Collections.unmodifiableList(this.uncategorised);
     }
 
     @Override
     public List<Warp> getWarpsForCategory(final String category) {
         final List<Warp> warps = this.categoryCollectionMap.computeIfAbsent(category.toLowerCase(),
-                c -> Lists.newArrayList(this.getAllWarps().stream().filter(x ->
+                c -> this.getAllWarps().stream().filter(x ->
                         x.getCategory().map(cat -> cat.equalsIgnoreCase(c)).orElse(false))
-                        .collect(Collectors.toList())));
-        return ImmutableList.copyOf(warps);
+                        .collect(Collectors.toList()));
+        return Collections.unmodifiableList(warps);
     }
 
     public Map<WarpCategory, List<Warp>> getWarpsWithCategories() {

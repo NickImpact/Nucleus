@@ -13,6 +13,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+import org.spongepowered.api.event.Cause;
+import org.spongepowered.api.event.EventContextKeys;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.ChangeEntityWorldEvent;
@@ -68,10 +70,10 @@ public class EnforceGamemodeListener implements ListenerBase.Conditional {
             return;
         }
 
-        final Set<Context> contextSet = new HashSet<>(player.activeContexts());
+        final Set<Context> contextSet = Sponge.server().serviceProvider().contextService().contextsFor(player.contextCause());
         contextSet.removeIf(x -> x.getKey().equals(Context.WORLD_KEY));
         contextSet.add(new Context(Context.WORLD_KEY, world.key().asString()));
-        if (!player.hasPermission(contextSet, WorldPermissions.WORLD_FORCE_GAMEMODE_OVERRIDE)) {
+        if (!player.hasPermission(WorldPermissions.WORLD_FORCE_GAMEMODE_OVERRIDE)) {
             // set their gamemode accordingly.
             player.offer(Keys.GAME_MODE, world.properties().gameMode());
         }

@@ -10,11 +10,17 @@ import io.leangen.geantyref.TypeToken;
 import io.vavr.control.Either;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.SystemSubject;
+import org.spongepowered.api.command.CommandCompletion;
+import org.spongepowered.api.command.exception.ArgumentParseException;
+import org.spongepowered.api.command.parameter.ArgumentReader;
+import org.spongepowered.api.command.parameter.CommandContext;
 import org.spongepowered.api.command.parameter.CommonParameters;
 import org.spongepowered.api.command.parameter.Parameter;
+import org.spongepowered.api.command.parameter.managed.ValueParameterModifier;
 import org.spongepowered.api.command.parameter.managed.standard.ResourceKeyedValueParameters;
 import org.spongepowered.api.command.parameter.managed.standard.VariableValueParameters;
 import org.spongepowered.api.entity.Entity;
@@ -27,6 +33,8 @@ import org.spongepowered.api.world.server.ServerWorld;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * A selection of common parameters for making things consistent
@@ -45,7 +53,6 @@ public final class NucleusParameters {
         public static final String DESCRIPTION = "description";
         public static final String DISPLAY_NAME = "display name";
         public static final String DURATION = "duration";
-        public static final String ENABLED_WORLD = "enabled world";
         public static final String GAME_PROFILE = "game profile";
         public static final String LOCATION = "location";
         public static final String LORE = "lore";

@@ -31,6 +31,7 @@ import io.github.nucleuspowered.nucleus.core.services.interfaces.ISchedulerServi
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IStorageManager;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.ITextFileControllerCollection;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.ITextStyleService;
+import io.github.nucleuspowered.nucleus.core.services.interfaces.ITimingsService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IUserCacheService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IUserPreferenceService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IWarmupService;
@@ -100,6 +101,8 @@ public interface INucleusServiceCollection {
     IPlaceholderService placeholderService();
 
     ISchedulerService schedulerService();
+
+    ITimingsService timingsService();
 
     Logger logger();
 

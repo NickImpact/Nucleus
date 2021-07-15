@@ -9,6 +9,7 @@ import io.github.nucleuspowered.nucleus.modules.warp.WarpPermissions;
 import io.github.nucleuspowered.nucleus.modules.warp.services.WarpService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IPermissionService;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -35,10 +36,11 @@ public final class WarpParameter implements ValueParameter<Warp> {
         this.checkPermission = checkPermission;
     }
 
-    @Override public List<String> complete(final CommandContext context, final String currentInput) {
+    @Override public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
         return this.warpService.getWarpNames().stream()
             .filter(s -> s.startsWith(currentInput))
             .filter(s -> !this.checkPermission || this.checkPermission(context.cause(), s))
+            .map(CommandCompletion::of)
             .collect(Collectors.toList());
     }
 

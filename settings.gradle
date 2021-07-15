@@ -1,7 +1,6 @@
 rootProject.name = 'Nucleus'
 include 'nucleus-api'
 include 'nucleus-core'
-include 'nucleus-ap'
 include 'nucleus-modules'
 include 'nucleus-bootstrap'
 

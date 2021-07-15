@@ -4,11 +4,11 @@
  */
 package io.github.nucleuspowered.nucleus.core.services.impl.compatibility;
 
-import com.google.common.collect.ImmutableSet;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.ICompatibilityService;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class Message implements ICompatibilityService.CompatibilityMessages {
 
@@ -30,7 +30,7 @@ public class Message implements ICompatibilityService.CompatibilityMessages {
         this.symptom = symptom;
         this.message = message;
         this.resolution = resolution;
-        this.modules = modules == null ? ImmutableSet.of() : ImmutableSet.copyOf(modules);
+        this.modules = modules == null ? Collections.emptySet() : Collections.unmodifiableCollection(modules);
     }
 
     @Override

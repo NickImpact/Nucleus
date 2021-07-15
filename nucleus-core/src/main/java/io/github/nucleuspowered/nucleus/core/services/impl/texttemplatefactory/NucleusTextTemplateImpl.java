@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.services.impl.texttemplatefactory;
 
-import com.google.common.collect.ImmutableMap;
 import io.github.nucleuspowered.nucleus.api.text.NucleusTextTemplate;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import net.kyori.adventure.text.Component;
@@ -63,6 +62,26 @@ public class NucleusTextTemplateImpl implements NucleusTextTemplate {
     }
 
     @Override
+    public Component getBody(final Object source) {
+        return this.getBody(source, null);
+    }
+
+    @Override
+    public Component getBody(final Object source, final Object sender) {
+        if (this.serviceCollection == null) {
+            return Component.empty();
+        }
+        final Optional<ComponentLike> s =
+                Optional.of(this.serviceCollection.placeholderService().parse(sender, "displayname"));
+        return this.get(source, false, Collections.singletonMap("sender", se -> s));
+    }
+
+    @Override
+    public Component getBody(final Object source, @Nullable final Map<String, Function<Object, Optional<ComponentLike>>> tokensArray) {
+        return this.get(source, false, tokensArray);
+    }
+
+    @Override
     public Optional<Component> getSuffix() {
         if (this.serviceCollection == null) {
             return Optional.empty();
@@ -80,7 +99,7 @@ public class NucleusTextTemplateImpl implements NucleusTextTemplate {
 
     @Override
     public Component getForObject(final Object source) {
-        return this.getForObjectWithTokens(source, null);
+        return this.get(source, true, null);
     }
 
     @Override
@@ -90,20 +109,22 @@ public class NucleusTextTemplateImpl implements NucleusTextTemplate {
         }
         final Optional<ComponentLike> s =
                 Optional.of(this.serviceCollection.placeholderService().parse(sender, "displayname"));
-        return this.getForObjectWithSenderToken(source,
-                ImmutableMap.<String, Function<Object, Optional<? extends ComponentLike>>>builder()
-                        .put("sender", se -> s)
-                        .build());
+        return this.get(source, true, Collections.singletonMap("sender", se -> s));
     }
 
     @Override
     public Component getForObjectWithTokens(final Object source, @Nullable final Map<String, Function<Object, Optional<ComponentLike>>> tokensArray) {
+        return this.get(source, true, tokensArray);
+    }
+
+    private Component get(final Object source, final boolean prefix,
+            @Nullable final Map<String, Function<Object, Optional<ComponentLike>>> tokensArray) {
         if (this.serviceCollection == null) {
             return Component.empty();
         }
 
         final TextComponent.Builder builder = Component.text();
-        if (this.prefix != null) {
+        if (prefix && this.prefix != null) {
             builder.append(this.prefix);
         }
 
@@ -111,7 +132,7 @@ public class NucleusTextTemplateImpl implements NucleusTextTemplate {
             builder.append(textComponent.apply(source, tokensArray));
         }
 
-        if (this.suffix != null) {
+        if (prefix && this.suffix != null) {
             builder.append(this.suffix);
         }
 

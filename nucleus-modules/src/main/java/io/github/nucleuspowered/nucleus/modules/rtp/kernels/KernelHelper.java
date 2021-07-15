@@ -27,9 +27,9 @@ public class KernelHelper {
     }
 
     public Vector3d getLocationWithOffset(final Vector3i centre, final NucleusRTPService.RTPOptions options) {
-        final int x = this.randomSign(this.getRandomBetween(options.minRadius(), options.maxRadius())) + centre.getX();
+        final int x = this.randomSign(this.getRandomBetween(options.minRadius(), options.maxRadius())) + centre.x();
         final int y = this.getRandomBetween(options.minHeight(), options.maxHeight());
-        final int z = this.randomSign(this.getRandomBetween(options.minRadius(), options.maxRadius())) + centre.getZ();
+        final int z = this.randomSign(this.getRandomBetween(options.minRadius(), options.maxRadius())) + centre.z();
         return new Vector3d(x, y, z);
     }
 

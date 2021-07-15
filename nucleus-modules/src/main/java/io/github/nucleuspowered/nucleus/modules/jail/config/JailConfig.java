@@ -4,12 +4,12 @@
  */
 package io.github.nucleuspowered.nucleus.modules.jail.config;
 
-import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.core.configurate.config.CommonPermissionLevelConfig;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.annotation.configuratehelper.LocalisedComment;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
+import java.util.Arrays;
 import java.util.List;
 
 @ConfigSerializable
@@ -17,7 +17,7 @@ public class JailConfig {
 
     @Setting(value = "allowed-commands")
     @LocalisedComment("config.jail.commands")
-    private List<String> allowedCommands = Lists.newArrayList("m", "msg", "r", "mail", "rules", "info");
+    private List<String> allowedCommands = Arrays.asList("m", "msg", "r", "mail", "rules", "info");
 
     @Setting(value = "mute-when-jailed")
     @LocalisedComment("config.jail.muteWhenJailed")

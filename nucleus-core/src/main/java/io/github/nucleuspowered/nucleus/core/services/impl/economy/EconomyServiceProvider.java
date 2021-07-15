@@ -45,7 +45,7 @@ public class EconomyServiceProvider implements IEconomyServiceProvider {
         if (oes.isPresent()) {
             // Check balance.
             final EconomyService es = oes.get();
-            final Optional<UniqueAccount> ua = es.accountOrCreate(src);
+            final Optional<UniqueAccount> ua = es.findOrCreateAccount(src);
             return ua.isPresent() && ua.get().balance(es.defaultCurrency()).doubleValue() >= balance;
         }
 
@@ -62,7 +62,7 @@ public class EconomyServiceProvider implements IEconomyServiceProvider {
         if (oes.isPresent()) {
             // Check balance.
             final EconomyService es = oes.get();
-            final Optional<UniqueAccount> a = es.accountOrCreate(src);
+            final Optional<UniqueAccount> a = es.findOrCreateAccount(src);
             if (!a.isPresent()) {
                 Sponge.server().player(src).ifPresent(x ->
                         this.messageProviderService.sendMessageTo(x, "cost.noaccount"));
@@ -102,7 +102,7 @@ public class EconomyServiceProvider implements IEconomyServiceProvider {
         if (oes.isPresent()) {
             // Check balance.
             final EconomyService es = oes.get();
-            final Optional<UniqueAccount> a = es.accountOrCreate(src);
+            final Optional<UniqueAccount> a = es.findOrCreateAccount(src);
             if (!a.isPresent()) {
                 Sponge.server().player(src).ifPresent(x ->
                         this.messageProviderService.sendMessageTo(x, "cost.noaccount"));

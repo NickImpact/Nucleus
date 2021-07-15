@@ -24,6 +24,7 @@ import org.spongepowered.api.util.MinecraftDayTime;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.server.ServerLocation;
 import org.spongepowered.api.world.server.ServerWorld;
+import org.spongepowered.math.vector.Vector2d;
 import org.spongepowered.math.vector.Vector3d;
 
 import java.io.FileOutputStream;
@@ -115,7 +116,7 @@ public final class Util {
     }
 
     /**
-     * Tests to see if the supplied {@link Location} is within the world's {@link org.spongepowered.api.world.WorldBorder}
+     * Tests to see if the supplied {@link Location} is within the world's {@link org.spongepowered.api.world.border.WorldBorder}
      *
      * @param location The {@link Location} to test.
      * @return <code>true</code> if the location is within the border.
@@ -132,10 +133,10 @@ public final class Util {
         // We get the current position and subtract the border centre. This gives us an effective distance from the
         // centre in all three dimensions. We just care about the magnitude in the x and z directions, so we get the
         // positive amount.
-        final Vector3d displacement = location.sub(world.properties().worldBorder().center()).abs();
+        final Vector2d displacement = location.toVector2(true).sub(world.properties().worldBorder().center()).abs();
 
         // Check that we're not too far out.
-        return !(displacement.getX() > radius || displacement.getZ() > radius);
+        return !(displacement.x() > radius || displacement.y() > radius);
     }
 
     public static void compressAndDeleteFile(final Path from) throws IOException {

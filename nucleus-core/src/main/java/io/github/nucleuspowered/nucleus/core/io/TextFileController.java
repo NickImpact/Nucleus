@@ -4,8 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.io;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.core.Util;
 import io.github.nucleuspowered.nucleus.api.text.NucleusTextTemplate;
 import io.github.nucleuspowered.nucleus.core.services.impl.texttemplatefactory.NucleusTextTemplateImpl;
@@ -24,6 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -38,11 +39,11 @@ public final class TextFileController {
 
     private static final Component padding = Component.text("-", NamedTextColor.GOLD);
 
-    private static final List<Charset> characterSetsToTest = Lists.newArrayList(
-        StandardCharsets.UTF_8,
-        StandardCharsets.ISO_8859_1,
-        StandardCharsets.US_ASCII,
-        StandardCharsets.UTF_16
+    private static final List<Charset> characterSetsToTest = Arrays.asList(
+            StandardCharsets.UTF_8,
+            StandardCharsets.ISO_8859_1,
+            StandardCharsets.US_ASCII,
+            StandardCharsets.UTF_16
     );
 
     /**
@@ -155,12 +156,12 @@ public final class TextFileController {
     /**
      * Gets the contents of the file.
      *
-     * @return An {@link ImmutableList} that contains the file contents.
+     * @return An immutable {@link Collection} that contains the file contents.
      */
-    private ImmutableList<NucleusTextTemplateImpl> getFileContentsAsText() {
+    private Collection<NucleusTextTemplateImpl> getFileContentsAsText() {
         this.checkFileStamp();
         if (this.textTemplates.isEmpty()) {
-            final List<String> contents = Lists.newArrayList(this.fileContents);
+            final List<String> contents = new ArrayList<>(this.fileContents);
             if (this.getTitle) {
                 this.title = this.getTitleFromStrings(contents);
 
@@ -182,7 +183,7 @@ public final class TextFileController {
             contents.forEach(x -> this.textTemplates.add(this.textTemplateFactory.createFromAmpersandString(x)));
         }
 
-        return ImmutableList.copyOf(this.textTemplates);
+        return Collections.unmodifiableCollection(this.textTemplates);
     }
 
     @Nullable private NucleusTextTemplate getTitleFromStrings(final List<String> info) {

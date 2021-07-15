@@ -100,7 +100,7 @@ public class WarmupService implements IWarmupService, IReloadableService.Reloada
     private boolean cancelInternal(final Player player) {
         final UUID taskUUID = this.tasks.get(player.uniqueId());
         if (taskUUID != null) {
-            Sponge.server().scheduler().taskById(taskUUID).ifPresent(ScheduledTask::cancel);
+            Sponge.server().scheduler().findTask(taskUUID).ifPresent(ScheduledTask::cancel);
             final WarmupTask task = this.uuidToWarmup.get(taskUUID);
             if (task != null) {
                 // if we get here, it was never cancelled.
@@ -117,7 +117,7 @@ public class WarmupService implements IWarmupService, IReloadableService.Reloada
         synchronized (this.lockingObject) {
             final UUID taskUUID = this.tasks.get(player.uniqueId());
             if (taskUUID != null) {
-                if (Sponge.server().scheduler().taskById(taskUUID).isPresent()) {
+                if (Sponge.server().scheduler().findTask(taskUUID).isPresent()) {
                     // remove entries
                     return true;
                 } else {

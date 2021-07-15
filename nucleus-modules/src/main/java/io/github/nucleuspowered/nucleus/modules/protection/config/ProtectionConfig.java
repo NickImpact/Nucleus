@@ -5,6 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.protection.config;
 
 import io.github.nucleuspowered.nucleus.core.services.interfaces.annotation.configuratehelper.LocalisedComment;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -38,7 +39,7 @@ public class ProtectionConfig {
         return this.blockBreaking.enableProtection;
     }
 
-    public List<EntityType<?>> getWhitelistedEntities() {
+    public List<ResourceKey> getWhitelistedEntities() {
         return this.blockBreaking.whitelist;
     }
 
@@ -60,7 +61,7 @@ public class ProtectionConfig {
         private boolean enableProtection = false;
 
         @Setting(value = "whitelist")
-        private List<EntityType<?>> whitelist = new ArrayList<>();
+        private List<ResourceKey> whitelist = new ArrayList<>();
 
 
     }

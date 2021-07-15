@@ -4,9 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.home.services;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.core.Util;
 import io.github.nucleuspowered.nucleus.api.module.home.NucleusHomeService;
@@ -40,7 +37,9 @@ import org.spongepowered.api.world.server.ServerLocation;
 import org.spongepowered.api.world.teleport.TeleportHelperFilter;
 import org.spongepowered.math.vector.Vector3d;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,17 +60,17 @@ public class HomeService implements NucleusHomeService, ServiceBase {
     @Override
     public List<Home> getHomes(final UUID user) {
         final Optional<IUserDataObject> service = this.serviceCollection.storageManager().getUserOnThread(user); //.get().getHome;
-        return service.map(modularUserService -> this.getHomes(user, modularUserService)).orElseGet(ImmutableList::of);
+        return service.map(modularUserService -> this.getHomes(user, modularUserService)).orElseGet(Collections::emptyList);
 
     }
 
     private List<Home> getHomes(final UUID user, final IUserDataObject userDataObject) {
-        return this.getHomesFrom(user, userDataObject.get(HomeKeys.HOMES).orElseGet(ImmutableMap::of));
+        return this.getHomesFrom(user, userDataObject.get(HomeKeys.HOMES).orElseGet(Collections::emptyMap));
     }
 
     public Collection<String> getHomeNames(final UUID user) {
         return this.serviceCollection.storageManager()
-                .getUserOnThread(user).flatMap(x -> x.get(HomeKeys.HOMES).map(Map::keySet)).orElseGet(ImmutableSet::of);
+                .getUserOnThread(user).flatMap(x -> x.get(HomeKeys.HOMES).map(Map::keySet)).orElseGet(Collections::emptySet);
     }
 
     @Override public Optional<Home> getHome(final UUID user, final String name) {
@@ -96,7 +95,7 @@ public class HomeService implements NucleusHomeService, ServiceBase {
 
         final int max = this.getMaximumHomes(user);
         final IUserDataObject udo = this.serviceCollection.storageManager().getOrCreateUserOnThread(user);
-        final Map<String, LocationNode> m = udo.get(HomeKeys.HOMES).orElseGet(ImmutableMap::of);
+        final Map<String, LocationNode> m = udo.get(HomeKeys.HOMES).orElseGet(Collections::emptyMap);
         if (m.size() >= max) {
             throw new HomeException(
                     this.serviceCollection.messageProvider().getMessageFor(cause.first(Audience.class).orElseGet(Sponge::systemSubject),
@@ -139,7 +138,7 @@ public class HomeService implements NucleusHomeService, ServiceBase {
         this.postEvent(event);
 
         final IUserDataObject udo = this.serviceCollection.storageManager().getOrCreateUserOnThread(home.getOwnersUniqueId());
-        final Map<String, LocationNode> m = udo.get(HomeKeys.HOMES).orElseGet(ImmutableMap::of);
+        final Map<String, LocationNode> m = udo.get(HomeKeys.HOMES).orElseGet(Collections::emptyMap);
         if (!this.setHome(home.getOwnersUniqueId(), m, home.getName(), location, rotation, true)) {
             throw new HomeException(
                     this.serviceCollection.messageProvider().getMessageFor(
@@ -163,7 +162,7 @@ public class HomeService implements NucleusHomeService, ServiceBase {
             this.postEvent(event);
 
             final IUserDataObject udo = this.serviceCollection.storageManager().getOrCreateUserOnThread(home.getOwnersUniqueId());
-            final Map<String, LocationNode> m = udo.get(HomeKeys.HOMES).orElseGet(ImmutableMap::of);
+            final Map<String, LocationNode> m = udo.get(HomeKeys.HOMES).orElseGet(Collections::emptyMap);
             if (!this.deleteHome(home.getOwnersUniqueId(), m, home.getName())) {
                 throw new HomeException(
                         this.serviceCollection.messageProvider().getMessageFor(
@@ -241,12 +240,12 @@ public class HomeService implements NucleusHomeService, ServiceBase {
     }
 
     private List<Home> getHomesFrom(final UUID uuid, final Map<String, LocationNode> msln) {
-        final ImmutableList.Builder<Home> i = ImmutableList.builder();
+        final List<Home> i = new ArrayList<>();
         for (final Map.Entry<String, LocationNode> entry : msln.entrySet()) {
             i.add(this.getHomeFrom(entry.getKey(), uuid, entry.getValue()));
         }
 
-        return i.build();
+        return Collections.unmodifiableList(i);
     }
 
     private Home getHomeFrom(final String string, final UUID user, final LocationNode node) {

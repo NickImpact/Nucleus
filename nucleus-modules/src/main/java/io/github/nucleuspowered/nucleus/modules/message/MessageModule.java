@@ -7,6 +7,7 @@ package io.github.nucleuspowered.nucleus.modules.message;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.api.core.event.NucleusRegisterPreferenceKeyEvent;
 import io.github.nucleuspowered.nucleus.core.module.IModule;
+import io.github.nucleuspowered.nucleus.core.services.impl.playerinformation.NucleusProvider;
 import io.github.nucleuspowered.nucleus.core.services.impl.userprefs.UserPreferenceService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IUserPreferenceService;
 import io.github.nucleuspowered.nucleus.modules.message.commands.HelpOpCommand;
@@ -15,6 +16,7 @@ import io.github.nucleuspowered.nucleus.modules.message.commands.MsgToggleComman
 import io.github.nucleuspowered.nucleus.modules.message.commands.ReplyCommand;
 import io.github.nucleuspowered.nucleus.modules.message.commands.SocialSpyCommand;
 import io.github.nucleuspowered.nucleus.modules.message.config.MessageConfig;
+import io.github.nucleuspowered.nucleus.modules.message.infoprovider.MessageInfoProvider;
 import io.github.nucleuspowered.nucleus.modules.message.listener.MessageListener;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandExecutor;
 import io.github.nucleuspowered.nucleus.core.scaffold.listener.ListenerBase;
@@ -32,13 +34,6 @@ import java.util.Optional;
 public final class MessageModule implements IModule.Configurable<MessageConfig> {
 
     public static final String ID = "message";
-
-    private final IUserPreferenceService preferenceService;
-
-    @Inject
-    public MessageModule(final INucleusServiceCollection serviceCollection) {
-        this.preferenceService = serviceCollection.userPreferenceService();
-    }
 
     @Override
     public void init(final INucleusServiceCollection serviceCollection) {
@@ -74,6 +69,11 @@ public final class MessageModule implements IModule.Configurable<MessageConfig> 
     @Listener
     public void onPreferenceKeyRegistration(final NucleusRegisterPreferenceKeyEvent event) {
         event.register(MessageKeys.MESSAGE_TOGGLE).register(MessageKeys.SOCIAL_SPY);
+    }
+
+    @Override
+    public Optional<NucleusProvider> getInfoProvider() {
+        return Optional.of(new MessageInfoProvider());
     }
 
 }

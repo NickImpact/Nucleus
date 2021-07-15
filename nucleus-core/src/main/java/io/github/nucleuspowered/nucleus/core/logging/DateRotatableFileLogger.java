@@ -4,8 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.logging;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.core.Util;
 
 import java.io.Closeable;
@@ -17,7 +15,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Function;
 
 public class DateRotatableFileLogger implements Closeable {
@@ -32,8 +32,8 @@ public class DateRotatableFileLogger implements Closeable {
     private boolean isClosed = false;
 
     public DateRotatableFileLogger(final String directory, final String filenamePrefix, final Function<String, String> formatter) throws IOException {
-        Preconditions.checkNotNull(directory);
-        Preconditions.checkNotNull(filenamePrefix);
+        Objects.requireNonNull(directory);
+        Objects.requireNonNull(filenamePrefix);
 
         this.directory = nucleusBase.resolve(directory);
         this.filenamePrefix = filenamePrefix;
@@ -81,7 +81,7 @@ public class DateRotatableFileLogger implements Closeable {
             throw new IllegalStateException();
         }
 
-        this.logEntry(Lists.newArrayList(entry), true);
+        this.logEntry(Collections.singleton(entry), true);
     }
 
     public void logEntry(final Iterable<String> entry) throws IOException {

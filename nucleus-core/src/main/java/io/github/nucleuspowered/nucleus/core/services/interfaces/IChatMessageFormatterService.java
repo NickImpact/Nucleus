@@ -11,7 +11,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.PlayerChatRouter;
+import org.spongepowered.api.entity.living.player.PlayerChatFormatter;
 import org.spongepowered.api.event.message.PlayerChatEvent;
 
 import java.util.Optional;
@@ -47,7 +47,7 @@ public interface IChatMessageFormatterService {
         Component formatMessage(Audience source, Component body);
 
         default void formatMessageEvent(final Audience audience, final PlayerChatEvent event) {
-            event.setChatRouter(PlayerChatRouter.toAudience(this.receivers()));
+            event.setAudience(this.receivers());
             event.setMessage(this.formatMessage(audience, event.message()));
         }
 

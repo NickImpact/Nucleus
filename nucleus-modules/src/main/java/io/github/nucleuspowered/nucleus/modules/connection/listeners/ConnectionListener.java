@@ -20,8 +20,11 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.IsCancelled;
 import org.spongepowered.api.event.network.ServerSideConnectionEvent;
+import org.spongepowered.api.service.ban.Ban;
 import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.util.Tristate;
+
+import java.util.Optional;
 
 public class ConnectionListener implements IReloadableService.Reloadable, ListenerBase {
 
@@ -48,7 +51,13 @@ public class ConnectionListener implements IReloadableService.Reloadable, Listen
         // Have to join - we need to handle this event
         // TODO: Maybe look into getting Sponge to report a ban in this event if there is one.
         final BanService banService = Sponge.server().serviceProvider().banService();
-        if (banService.isBanned(user.profile()).join() || banService.isBanned(event.connection().address().getAddress()).join()) {
+        final Optional<Ban.Profile> profileBan = banService.find(user.profile()).join();
+        if (profileBan.isPresent()) {
+            return;
+        }
+
+        final Optional<Ban.IP> ipBan = banService.find(event.connection().address().getAddress()).join();
+        if (ipBan.isPresent()) {
             return;
         }
 

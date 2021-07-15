@@ -4,8 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.powertool.services;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import io.github.nucleuspowered.nucleus.modules.powertool.PowertoolKeys;
 import io.github.nucleuspowered.nucleus.core.scaffold.service.ServiceBase;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
@@ -15,6 +13,7 @@ import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.item.ItemType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class PowertoolService implements ServiceBase {
             this.powertools.put(uuid, m);
         }
 
-        return ImmutableMap.copyOf(m);
+        return Collections.unmodifiableMap(m);
     }
 
     // TODO: Fix powertools - the module needs redoing to properly handle items types and not just do this
@@ -61,7 +60,7 @@ public class PowertoolService implements ServiceBase {
         if (key != null) {
             final List<String> tools = this.getPowertools(uuid).get(key);
             if (tools != null) {
-                return Optional.of(ImmutableList.copyOf(tools));
+                return Optional.of(Collections.unmodifiableList(tools));
             }
         }
 

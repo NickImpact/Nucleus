@@ -18,6 +18,7 @@ import io.github.nucleuspowered.nucleus.core.util.AdventureUtils;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.command.manager.CommandMapping;
@@ -28,6 +29,7 @@ import org.spongepowered.api.command.parameter.managed.ValueParameter;
 import org.spongepowered.plugin.PluginContainer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,8 +70,8 @@ public class CommandInfoCommand implements ICommandExecutor {
 
         // Owner
         final PluginContainer owner = mapping.plugin();
-        content.add(provider.getMessage("command.commandinfo.owner", owner.getMetadata().getName()
-                .orElseGet(() -> context.getMessageString("standard.unknown")) + " (" + owner.getMetadata().getId() + ")"));
+        content.add(provider.getMessage("command.commandinfo.owner", owner.metadata().name()
+                .orElseGet(() -> context.getMessageString("standard.unknown")) + " (" + owner.metadata().id() + ")"));
         content.add(context.getMessage("command.commandinfo.aliases", String.join(", ", mapping.allAliases())));
 
         if (mapping.plugin().equals(context.getServiceCollection().pluginContainer())) {
@@ -122,8 +124,9 @@ public class CommandInfoCommand implements ICommandExecutor {
         }
 
         @Override
-        public List<String> complete(final CommandContext context, final String string) {
-            return new ArrayList<>(Sponge.server().commandManager().suggest(context.subject(), context.cause().audience(), string));
+        public List<CommandCompletion> complete(final CommandContext context, final String string) {
+            // grabs the commands the player can see.
+            return Collections.unmodifiableList(Sponge.server().commandManager().complete(context.subject(), context.cause().audience(), string));
         }
 
         @Override

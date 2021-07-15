@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.core.services.impl.compatibility;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,6 +15,7 @@ import io.github.nucleuspowered.nucleus.core.services.interfaces.IModuleReporter
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,13 +34,13 @@ public class CompatibilityService implements ICompatibilityService {
 
     @Override
     public Collection<CompatibilityMessages> getMessages() {
-        return ImmutableList.copyOf(this.messages);
+        return Collections.unmodifiableList(this.messages);
     }
 
     @Override
     public Collection<CompatibilityMessages> getApplicableMessages() {
         if (this.messages.isEmpty()) {
-            return ImmutableList.of();
+            return Collections.emptyList();
         }
 
         if (this.applicableMessages == null) {

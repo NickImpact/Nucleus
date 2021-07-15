@@ -7,9 +7,11 @@ package io.github.nucleuspowered.nucleus.modules.vanish;
 import io.github.nucleuspowered.nucleus.api.core.NucleusUserPreferenceService;
 import io.github.nucleuspowered.nucleus.api.core.event.NucleusRegisterPreferenceKeyEvent;
 import io.github.nucleuspowered.nucleus.core.module.IModule;
+import io.github.nucleuspowered.nucleus.core.services.impl.playerinformation.NucleusProvider;
 import io.github.nucleuspowered.nucleus.modules.vanish.commands.ToggleVanishOnLoginCommand;
 import io.github.nucleuspowered.nucleus.modules.vanish.commands.VanishCommand;
 import io.github.nucleuspowered.nucleus.modules.vanish.config.VanishConfig;
+import io.github.nucleuspowered.nucleus.modules.vanish.infoprovider.VanishInfoProvider;
 import io.github.nucleuspowered.nucleus.modules.vanish.listener.VanishListener;
 import io.github.nucleuspowered.nucleus.modules.vanish.services.VanishService;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandExecutor;
@@ -67,6 +69,10 @@ public final class VanishModule implements IModule.Configurable<VanishConfig> {
 
     @Override public Class<VanishConfig> getConfigClass() {
         return VanishConfig.class;
+    }
+
+    @Override public Optional<NucleusProvider> getInfoProvider() {
+        return Optional.of(new VanishInfoProvider());
     }
 
     @Listener

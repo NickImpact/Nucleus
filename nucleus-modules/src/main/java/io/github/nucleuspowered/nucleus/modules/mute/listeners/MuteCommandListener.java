@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.mute.listeners;
 
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.api.module.mute.data.Mute;
 import io.github.nucleuspowered.nucleus.modules.mute.config.MuteConfig;
@@ -22,6 +21,8 @@ import org.spongepowered.api.event.command.ExecuteCommandEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class MuteCommandListener implements ListenerBase.Conditional {
 
         // If the command exists, then get all aliases.
         cmd = oc.map(commandMapping -> commandMapping.allAliases().stream().map(String::toLowerCase).collect(Collectors.toSet()))
-                .orElseGet(() -> Sets.newHashSet(command));
+                .orElseGet(() -> Collections.singleton(command));
 
         // If the command is in the list, block it.
         if (this.blockedCommands.stream().map(String::toLowerCase).anyMatch(cmd::contains)) {

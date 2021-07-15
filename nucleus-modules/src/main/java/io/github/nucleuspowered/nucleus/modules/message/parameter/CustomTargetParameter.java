@@ -7,6 +7,7 @@ package io.github.nucleuspowered.nucleus.modules.message.parameter;
 import io.github.nucleuspowered.nucleus.api.module.message.target.MessageTarget;
 import io.github.nucleuspowered.nucleus.modules.message.services.MessageHandler;
 import net.kyori.adventure.text.Component;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -26,8 +27,11 @@ public final class CustomTargetParameter implements ValueParameter<MessageTarget
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String currentInput) {
-        return this.messageHandler.getCustomTargets().stream().filter(x -> x.startsWith(currentInput)).collect(Collectors.toList());
+    public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
+        return this.messageHandler.getCustomTargets().stream()
+                .filter(x -> x.startsWith(currentInput))
+                .map(CommandCompletion::of)
+                .collect(Collectors.toList());
     }
 
     @Override

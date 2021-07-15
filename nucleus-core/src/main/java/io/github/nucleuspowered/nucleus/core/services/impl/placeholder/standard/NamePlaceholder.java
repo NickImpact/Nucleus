@@ -12,6 +12,7 @@ import org.spongepowered.api.SystemSubject;
 import org.spongepowered.api.placeholder.PlaceholderContext;
 import org.spongepowered.api.placeholder.PlaceholderParser;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -58,4 +59,22 @@ public class NamePlaceholder<T> implements PlaceholderParser {
         return Component.empty();
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+        final NamePlaceholder<?> that = (NamePlaceholder<?>) o;
+        return this.consoleFilter == that.consoleFilter && Objects.equals(this.playerDisplayNameService, that.playerDisplayNameService)
+                && Objects.equals(this.parser, that.parser) && Objects.equals(this.resourceKey, that.resourceKey) && Objects
+                .equals(this.clazz, that.clazz);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.playerDisplayNameService, this.consoleFilter, this.parser, this.resourceKey, this.clazz);
+    }
 }

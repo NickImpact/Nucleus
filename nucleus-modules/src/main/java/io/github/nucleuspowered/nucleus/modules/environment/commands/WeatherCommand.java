@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.modules.environment.EnvironmentKeys;
 import io.github.nucleuspowered.nucleus.modules.environment.EnvironmentPermissions;
 import io.github.nucleuspowered.nucleus.modules.environment.config.EnvironmentConfig;
-import io.github.nucleuspowered.nucleus.modules.environment.parameter.WeatherArgument;
+import io.github.nucleuspowered.nucleus.modules.environment.parameter.WeatherParameter;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandContext;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandExecutor;
 import io.github.nucleuspowered.nucleus.core.scaffold.command.ICommandResult;
@@ -27,8 +27,6 @@ import org.spongepowered.api.registry.RegistryTypes;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.Ticks;
 import org.spongepowered.api.world.server.ServerWorld;
-import org.spongepowered.api.world.storage.WorldProperties;
-import org.spongepowered.api.world.weather.Weather;
 import org.spongepowered.api.world.weather.WeatherType;
 
 import java.time.Duration;
@@ -53,7 +51,7 @@ public class WeatherCommand implements ICommandExecutor, IReloadableService.Relo
     @Inject
     public WeatherCommand(final IMessageProviderService messageProviderService) {
         this.weatherParameter = Parameter.builder(WeatherType.class)
-                .addParser(new WeatherArgument(messageProviderService))
+                .addParser(new WeatherParameter(messageProviderService))
                 .key("weather")
                 .build();
     }

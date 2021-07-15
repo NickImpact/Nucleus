@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.note.services;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.api.module.note.NucleusNoteService;
 import io.github.nucleuspowered.nucleus.api.module.note.data.Note;
@@ -67,7 +66,7 @@ public class NoteHandler implements NucleusNoteService, ServiceBase {
 
         return this.serviceCollection.storageManager().getUserService().getOrNew(user).thenApply(x -> {
             try (final IKeyedDataObject.Value<List<NoteData>> v = x.getAndSet(NoteKeys.NOTE_DATA)) {
-                final List<NoteData> data = v.getValue().orElseGet(Lists::newArrayList);
+                final List<NoteData> data = v.getValue().orElseGet(ArrayList::new);
                 data.add(note.toNoteData());
                 v.setValue(data);
             }

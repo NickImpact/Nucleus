@@ -4,13 +4,10 @@
  */
 package io.github.nucleuspowered.nucleus.modules.connectionmessages.listeners;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.api.core.event.NucleusFirstJoinEvent;
 import io.github.nucleuspowered.nucleus.api.text.NucleusTextTemplate;
 import io.github.nucleuspowered.nucleus.core.core.CoreKeys;
-import io.github.nucleuspowered.nucleus.modules.connectionmessages.ConnectionMessagesPermissions;
-import io.github.nucleuspowered.nucleus.modules.connectionmessages.config.ConnectionMessagesConfig;
 import io.github.nucleuspowered.nucleus.core.scaffold.listener.ListenerBase;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.github.nucleuspowered.nucleus.core.services.impl.texttemplatefactory.NucleusTextTemplateImpl;
@@ -18,6 +15,8 @@ import io.github.nucleuspowered.nucleus.core.services.interfaces.INucleusTextTem
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IPermissionService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IReloadableService;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IStorageManager;
+import io.github.nucleuspowered.nucleus.modules.connectionmessages.ConnectionMessagesPermissions;
+import io.github.nucleuspowered.nucleus.modules.connectionmessages.config.ConnectionMessagesConfig;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
@@ -25,6 +24,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.network.ServerSideConnectionEvent;
 
+import java.util.Collections;
 import java.util.Optional;
 
 public class ConnectionMessagesListener implements IReloadableService.Reloadable, ListenerBase {
@@ -60,7 +60,7 @@ public class ConnectionMessagesListener implements IReloadableService.Reloadable
                     // Name change!
                     joinEvent.audience().orElse(joinEvent.originalAudience())
                             .sendMessage(this.priorNameMessage.getForObjectWithTokens(pl,
-                                            ImmutableMap.of("previousname", cs -> Optional.of(Component.text(lastKnown.get())))));
+                                    Collections.singletonMap("previousname", cs -> Optional.of(Component.text(lastKnown.get())))));
             }
         } catch (final Exception e) {
             e.printStackTrace();

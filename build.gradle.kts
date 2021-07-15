@@ -24,9 +24,11 @@ plugins {
     idea
     eclipse
     `maven-publish`
-    id("com.github.hierynomus.license") version "0.15.0" apply false
-    id("ninja.miserable.blossom") version "1.0.1"
+    // id("com.github.hierynomus.license") version "0.15.0" apply false
+    id("org.cadixdev.licenser") version "0.5.1" apply false
+    id("net.kyori.blossom") version "1.2.0"
     id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("org.spongepowered.gradle.plugin") version "1.0.2"
     // id("org.spongepowered.gradle.plugin") version "0.11.0-SNAPSHOT"
     kotlin("jvm") version "1.3.61"
 }
@@ -50,44 +52,47 @@ fun getGitCommit() : String {
     }
 }
 
+val verbose = rootProject.properties["verbose-compile"] != null
 allprojects {
 
-    apply(plugin = "com.github.hierynomus.license")
+    apply(plugin = "org.cadixdev.licenser")
 
-    configure<nl.javadude.gradle.plugins.license.LicenseExtension> {
-        // ext.name = project.name
-
+    configure<org.cadixdev.gradle.licenser.LicenseExtension> {
+        header = rootProject.file("HEADER.txt")
+        newLine = false
         exclude("**/*.info")
         exclude("assets/**")
         exclude("*.kts")
         exclude("**/*.json")
         exclude("*.properties")
         exclude("*.txt")
-
-        header = rootProject.projectDir.resolve("HEADER.txt") //File("HEADER.txt")
-
-        // sourceSets.addLater(ProviderFactory.provider(() -> project(":nucleus-core").sourceSets))
-
-        ignoreFailures = false
-        strictCheck = true
-
-        mapping("java", "SLASHSTAR_STYLE")
     }
 
+    if (verbose) {
+        gradle.projectsEvaluated {
+            tasks.withType(JavaCompile::class.java) {
+                options.compilerArgs.add("-Xlint:unchecked")
+                options.isDeprecation = true
+            }
+        }
+    }
 }
 
 extra["gitHash"] = getGitCommit()
 
 // Get the Level
-val nucVersion = project.properties["nucleusVersion"]?.toString()!!
-val nucSuffix : String? = project.properties["nucleusVersionSuffix"]?.toString()
+val nucleusVersion: String by project // = project.properties["nucleusVersion"]?.toString()!!
+val nucleusVersionSuffix : String? by project // = project.properties["nucleusVersionSuffix"]?.toString()
+val vavrVersion: String by project
+val declaredApiVersion: String by project
+val spongeApiVersion: String by project
 
-var level = getLevel(nucVersion, nucSuffix)
-val spongeVersion: String = project.properties["declaredApiVersion"]!!.toString()
-val versionString: String = if (nucSuffix == null) {
-    nucVersion
+var level = getLevel(nucleusVersion, nucleusVersionSuffix)
+val spongeVersion: String = declaredApiVersion
+val versionString: String = if (nucleusVersionSuffix == null) {
+    nucleusVersion
 } else {
-    "$nucVersion-$nucSuffix"
+    "$nucleusVersion-$nucleusVersionSuffix"
 }
 val filenameSuffix = "SpongeAPI$spongeVersion"
 version = versionString
@@ -100,8 +105,33 @@ group = "io.github.nucleuspowered"
 defaultTasks.add("licenseFormat")
 defaultTasks.add("build")
 
+sponge {
+    apiVersion("$spongeApiVersion")
+    platform(org.spongepowered.gradle.common.SpongePlatform.VANILLA)
+    plugin("nucleus") {
+        loader(org.spongepowered.gradle.plugin.config.PluginLoaders.JAVA_PLAIN)
+        displayName("Nucleus")
+        mainClass("io.github.nucleuspowered.nucleus.bootstrap.NucleusBootstrapper")
+        description("Nucleus")
+        version(versionString)
+        links {
+            homepage("https://nucleuspowered.org")
+            source("https://github.com/NucleusPowered/Nucleus")
+            issues("https://github.com/NucleusPowered/Nucleus/issues")
+        }
+        contributor("dualspiral") {
+            description("Lead Developer")
+        }
+        dependency("spongeapi") {
+            loadOrder(org.spongepowered.plugin.metadata.PluginDependency.LoadOrder.AFTER)
+            optional(false)
+        }
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 repositories {
@@ -166,7 +196,7 @@ val relNotes by tasks.registering(RelNotesTask::class) {
 val writeRelNotes by tasks.registering {
     dependsOn(relNotes)
     doLast {
-        Files.write(project.projectDir.toPath().resolve("changelogs").resolve("${nucVersion}.md"),
+        Files.write(project.projectDir.toPath().resolve("changelogs").resolve("${nucleusVersion}.md"),
                 relNotes.get().relNotes!!.toByteArray(StandardCharsets.UTF_8))
     }
 }
@@ -174,7 +204,7 @@ val writeRelNotes by tasks.registering {
 val outputRelNotes by tasks.registering {
     dependsOn(relNotes)
     doLast {
-        Files.write(project.projectDir.toPath().resolve("output").resolve("${nucVersion}.md"),
+        Files.write(project.projectDir.toPath().resolve("output").resolve("${nucleusVersion}.md"),
                 relNotes.get().relNotes!!.toByteArray(StandardCharsets.UTF_8))
     }
 }
@@ -240,7 +270,7 @@ tasks {
         doFirst {
             manifest {
                 attributes["Implementation-Title"] = project.name
-                attributes["SpongeAPI-Version"] = project.properties["spongeApiVersion"]
+                attributes["SpongeAPI-Version"] = spongeApiVersion
                 attributes["Implementation-Version"] = project.version
                 attributes["Git-Hash"] = gitHash.get().result
             }
@@ -251,16 +281,23 @@ tasks {
             include(project(":nucleus-core"))
             include(project(":nucleus-modules"))
             include(project(":nucleus-bootstrap"))
-            include(dependency("io.vavr:vavr:0.10.3"))
+            include(dependency("io.vavr:vavr:$vavrVersion"))
         }
 
         if (!project.properties.containsKey("norelocate")) {
             relocate("io.vavr", "io.github.nucleuspowered.relocate.io.vavr")
         }
 
+        minimize {
+            exclude(project(":nucleus-api"))
+            exclude(project(":nucleus-core"))
+            exclude(project(":nucleus-modules"))
+            exclude(project(":nucleus-bootstrap"))
+        }
+
         exclude("io/github/nucleuspowered/nucleus/api/NucleusAPIMod.class")
-        val minecraftVersion = project.properties["minecraftversion"]
-        archiveFileName.set("Nucleus-${versionString}-MC${minecraftVersion}-$filenameSuffix-plugin.jar")
+        val minecraftversion: String by project
+        archiveFileName.set("Nucleus-${versionString}-MC${minecraftversion}-$filenameSuffix-plugin.jar")
     }
 
     build {

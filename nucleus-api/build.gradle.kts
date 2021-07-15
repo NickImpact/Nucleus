@@ -3,7 +3,6 @@ plugins {
     `java-library`
     idea
     eclipse
-    maven
     `maven-publish`
 }
 
@@ -21,6 +20,11 @@ repositories {
 
 dependencies {
     api("org.spongepowered:spongeapi:" + rootProject.properties["spongeApiVersion"])
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 val filenameSuffix = "SpongeAPI${rootProject.properties["declaredApiVersion"]}"
@@ -56,7 +60,7 @@ tasks {
             attributes["Implementation-Title"] = rootProject.name
             attributes["API-Version"] = project.version
             attributes["Implementation-Version"] = rootProject.version
-            attributes["Git-Hash"] = project.name
+            attributes["Git-Hash"] = rootProject.extra["gitHash"]
 
         }
 

@@ -4,7 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.modules.afk.listeners;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfig;
 import io.github.nucleuspowered.nucleus.modules.afk.services.AFKHandler;
@@ -15,10 +14,11 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.command.ExecuteCommandEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class AFKCommandListener extends AbstractAFKListener implements ListenerBase.Conditional {
-    private final List<String> commands = Lists.newArrayList("afk", "away");
+    private final List<String> commands = Arrays.asList("afk", "away");
 
     @Inject
     public AFKCommandListener(final INucleusServiceCollection serviceCollection) {

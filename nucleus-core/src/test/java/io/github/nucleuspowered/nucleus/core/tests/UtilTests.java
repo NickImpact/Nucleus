@@ -8,13 +8,14 @@ import io.github.nucleuspowered.nucleus.core.Util;
 import org.junit.Ignore;
 import org.spongepowered.api.world.server.ServerLocation;
 import org.spongepowered.api.world.server.ServerWorld;
+import org.spongepowered.math.vector.Vector2d;
 import org.spongepowered.math.vector.Vector3d;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
-import org.spongepowered.api.world.WorldBorder;
+import org.spongepowered.api.world.border.WorldBorder;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -69,70 +70,36 @@ public class UtilTests {
         private WorldBorder getBorder() {
             return new WorldBorder() {
 
-
-                @Override public double newDiameter() {
-                    return 0;
+                @Override public Vector2d center() {
+                    return null;
                 }
 
                 @Override public double diameter() {
                     return 0;
                 }
 
-                @Override public void setDiameter(final double diameter) {
-
+                @Override public double targetDiameter() {
+                    return 0;
                 }
 
-                @Override public void setDiameter(final double diameter, final Duration duration) {
-
-                }
-
-                @Override public void setDiameter(final double startDiameter, final double endDiameter, final Duration duration) {
-
-                }
-
-                @Override public Duration timeRemaining() {
+                @Override public Duration timeUntilTargetDiameter() {
                     return null;
                 }
 
-                @Override public void setCenter(final double x, final double z) {
-
+                @Override public double safeZone() {
+                    return 0;
                 }
 
-                @Override public Vector3d center() {
-                    return null;
+                @Override public double damagePerBlock() {
+                    return 0;
                 }
 
                 @Override public Duration warningTime() {
                     return null;
                 }
 
-                @Override public void setWarningTime(final Duration time) {
-
-                }
-
-                @Override public double warningDistance() {
+                @Override public int warningDistance() {
                     return 0;
-                }
-
-                @Override public void setWarningDistance(final double distance) {
-
-                }
-
-                @Override public double damageThreshold() {
-                    return 0;
-                }
-
-
-                @Override public void setDamageThreshold(final double distance) {
-
-                }
-
-                @Override public double damageAmount() {
-                    return 0;
-                }
-
-                @Override public void setDamageAmount(final double damage) {
-
                 }
             };
         }

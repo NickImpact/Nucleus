@@ -21,9 +21,9 @@ public class Vector3dTypeSerialiser implements TypeSerializer<Vector3d> {
     @Override
     public void serialize(final Type type, final Vector3d obj, final ConfigurationNode value) throws SerializationException {
         if (obj != null) {
-            value.node("rotx").set(obj.getX());
-            value.node("roty").set(obj.getY());
-            value.node("rotz").set(obj.getZ());
+            value.node("rotx").set(obj.x());
+            value.node("roty").set(obj.y());
+            value.node("rotz").set(obj.z());
         }
     }
 

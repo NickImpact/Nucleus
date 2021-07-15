@@ -39,7 +39,7 @@ public class LocationNode {
     public LocationNode() { }
 
     public LocationNode(final ServerLocation location) {
-        this(location, new Vector3d());
+        this(location, Vector3d.ZERO);
     }
 
     public LocationNode(final ServerLocation location, final Vector3d rotation) {
@@ -47,12 +47,12 @@ public class LocationNode {
     }
 
     public LocationNode(final ResourceKey world, final Vector3d length, final Vector3d rotation) {
-        this.x = length.getX();
-        this.y = length.getY();
-        this.z = length.getZ();
-        this.rotx = rotation.getX();
-        this.roty = rotation.getY();
-        this.rotz = rotation.getZ();
+        this.x = length.x();
+        this.y = length.y();
+        this.z = length.z();
+        this.rotx = rotation.x();
+        this.roty = rotation.y();
+        this.rotz = rotation.z();
         this.world = world;
     }
 
@@ -79,10 +79,9 @@ public class LocationNode {
      * Gets a {@link Location} from the node.
      *
      * @return The Location
-     * @throws NoSuchWorldException The world does not exist.
      */
-    public ServerLocation getLocation() throws NoSuchWorldException {
-        return this.getLocationIfExists().orElseThrow(NoSuchWorldException::new);
+    public ServerLocation getLocation() {
+        return this.getLocationIfExists().orElseThrow(IllegalStateException::new);
     }
 
     public Vector3d getRotation() {

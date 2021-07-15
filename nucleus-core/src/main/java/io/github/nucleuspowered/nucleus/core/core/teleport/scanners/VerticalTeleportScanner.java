@@ -31,7 +31,7 @@ public abstract class VerticalTeleportScanner implements TeleportScanner {
             final int floorDistance,
             final TeleportHelperFilter filter,
             final TeleportHelperFilter... filters) {
-        final int maxy = world.blockMax().getY();
+        final int maxy = world.blockMax().y();
         final int jumps = ((height * 2) - 1) * (this.isAscending ? 1 : -1);
 
         do {
@@ -49,7 +49,7 @@ public abstract class VerticalTeleportScanner implements TeleportScanner {
             }
 
             position = position.add(0, jumps, 0);
-        } while (position.getY() < maxy);
+        } while (position.y() < maxy);
 
         return Optional.empty();
     }

@@ -8,6 +8,7 @@ import io.github.nucleuspowered.nucleus.core.io.TextFileController;
 import io.github.nucleuspowered.nucleus.modules.info.services.InfoHandler;
 import io.github.nucleuspowered.nucleus.core.services.INucleusServiceCollection;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.IMessageProviderService;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.exception.ArgumentParseException;
 import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -31,11 +32,14 @@ public final class InfoValueParameter implements ValueParameter<InfoValueParamet
     }
 
     @Override
-    public List<String> complete(final CommandContext context, final String currentInput) {
+    public List<CommandCompletion> complete(final CommandContext context, final String currentInput) {
         try {
-            return this.handler.getInfoSections().stream().filter(x -> x.toLowerCase().startsWith(currentInput.toLowerCase())).collect(Collectors.toList());
+            return this.handler.getInfoSections().stream()
+                    .filter(x -> x.toLowerCase().startsWith(currentInput.toLowerCase()))
+                    .map(CommandCompletion::of)
+                    .collect(Collectors.toList());
         } catch (final Exception e) {
-            return new ArrayList<>(this.handler.getInfoSections());
+            return this.handler.getInfoSections().stream().map(CommandCompletion::of).collect(Collectors.toList());
         }
     }
 

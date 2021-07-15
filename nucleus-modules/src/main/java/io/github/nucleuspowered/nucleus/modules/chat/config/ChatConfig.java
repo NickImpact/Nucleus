@@ -4,11 +4,12 @@
  */
 package io.github.nucleuspowered.nucleus.modules.chat.config;
 
-import com.google.common.collect.ImmutableMap;
 import io.github.nucleuspowered.nucleus.core.services.interfaces.annotation.configuratehelper.LocalisedComment;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @ConfigSerializable
@@ -62,7 +63,7 @@ public class ChatConfig {
     }
 
     public Map<String, ChatTemplateConfig> getGroupTemplates() {
-        return ImmutableMap.copyOf(this.templates.getGroupTemplates());
+        return Collections.unmodifiableMap(new HashMap<>(this.templates.getGroupTemplates()));
     }
 
     public boolean isRemoveBlueUnderline() {
